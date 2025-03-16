@@ -1,0 +1,41 @@
+.friends-container {
+    text-align: center;
+    padding: 20px;
+  }
+  
+  .invite-button {
+    background-color: #28a745;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+  }
+  
+  .invite-button:hover {
+    background-color: #218838;
+  }
+  
+  .invite-section {
+    margin-top: 15px;
+  }
+  
+  .invite-section input {
+    width: 80%;
+    padding: 8px;
+    margin: 10px 0;
+    text-align: center;
+  }
+  
+  .invite-section button {
+    background-color: #007bff;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .invite-section button:hover {
+    background-color: #0056b3;
+  }

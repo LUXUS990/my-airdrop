@@ -1,0 +1,116 @@
+/* ===== استایل‌های عمومی برای کل صفحه ===== */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Arial", sans-serif;
+  background: none;
+  color: white;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* ===== کانتینر کلی صفحه ===== */
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100vw;
+}
+
+/* ===== استایل‌های مخصوص صفحه Home ===== */
+.home-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  width: 100vw;
+  background: linear-gradient(135deg, #1e3c72, #2a5298);
+  text-align: center;
+  color: white;
+}
+
+/* ===== تنظیمات لوگو ===== */
+.logo {
+  width: 180px;
+  height: auto;
+  margin-bottom: 50px;
+  border-radius: 50%; 
+  position: relative;
+  top: 90px;
+  transition: transform 0.3s ease;
+}
+
+.logo:hover {
+  transform: scale(1.1);
+}
+
+/* ===== عنوان صفحه ===== */
+h1 {
+  font-size: 32px;
+  font-weight: bold;
+  color: white;
+  text-align: center;
+  position: relative;
+  top: -10px;
+}
+
+/* ===== نوار پایین صفحه کاملاً چسبیده به گوشه‌ها ===== */
+.bottom-nav {
+  position: fixed;
+  bottom: 0; /* کاملاً به پایین صفحه چسبید */
+  left: 0;
+  width: 100%; /* حالا تمام عرض صفحه را پر می‌کند */
+  height: 80px; /* ارتفاع مناسب */
+  background: rgba(5, 5, 5, 0.98);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  box-shadow: 0px -5px 15px rgba(0, 0, 0, 0.9);
+  border-top: none;
+  border-radius: 15px 15px 0 0; /* انحنای نرم در بالا، بدون تأثیر بر کناره‌ها */
+  padding: 10px 0;
+  transition: all 0.3s ease-in-out;
+}
+
+/* ===== استایل دکمه‌های نوار پایین ===== */
+.nav-item {
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: bold;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 12px 18px;
+  border-radius: 10px;
+  transition: all 0.3s ease;
+}
+
+.nav-item:hover {
+  color: #ffcc00;
+  transform: translateY(-3px);
+}
+
+/* ===== استایل دکمه Wallet ===== */
+.wallet-button {
+  background-color: #444855;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  font-size: 18px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  margin-bottom: 20px;
+}
+
+.wallet-button:hover {
+  background-color: #393d47;
+  transform: scale(1.05);
+}
+
+/* ===== استایل برای دیگر صفحات ===== */
+.page-container {
+  display: flex;
+ flex-direction: column }
