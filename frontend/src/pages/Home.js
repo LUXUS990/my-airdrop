@@ -1,65 +1,62 @@
 import React, { useState, useEffect } from "react";
-import { ethers } from "ethers";
-import WalletConnectProvider from "@walletconnect/web3-provider";
+import { useNavigate } from "react-router-dom";
+import { auth } from "../firebaseConfig";
+import { signOut } from "firebase/auth";
 import "./Home.css";
 
 function Home() {
+  const navigate = useNavigate();
   const [walletAddress, setWalletAddress] = useState(null);
   const [tokens, setTokens] = useState(0);
   const [showWalletOptions, setShowWalletOptions] = useState(false);
-
-  // پاپ‌آپ راهنمای تراست ولت
-  const [showTrustHelp, setShowTrustHelp] = useState(false);
+  const [user, setUser] = useState(null);
 
   useEffect(() => {
     setTokens(100);
   }, []);
 
-  // تابع اتصال به والت
-  const connectWallet = async (walletType) => {
-    try {
-      let provider;
-      if (walletType === "metamask") {
-        if (!window.ethereum) {
-          alert("Please install MetaMask extension!");
-          return;
-        }
-        provider = new ethers.BrowserProvider(window.ethereum);
-        await window.ethereum.request({ method: "eth_requestAccounts" });
-      } else if (walletType === "trustwallet") {
-        provider = new WalletConnectProvider({
-          rpc: {
-            56: "https://bsc-dataseed.binance.org/"
-          }
-        });
-        await provider.enable();
-      }
+  // رصد وضعیت احراز هویت
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
+      setUser(currentUser);
+    });
+    return () => unsubscribe();
+  }, []);
 
-      const signer = await provider.getSigner();
-      const address = await signer.getAddress();
-      setWalletAddress(address);
-      setShowWalletOptions(false);
-      setShowTrustHelp(false); // اگر باز بود ببندد
-    } catch (error) {
-      console.error("Error connecting wallet:", error);
-    }
+  // تابع اتصال والت (فقط برای نمایش لاگ)
+  const connectWallet = (walletType) => {
+    console.log(`${walletType} Clicked`);
   };
 
-  // تابع قطع اتصال والت
   const disconnectWallet = () => {
     setWalletAddress(null);
     setShowWalletOptions(false);
-    setShowTrustHelp(false);
   };
 
-  // باز و بسته‌کردن راهنمای تراست ولت
-  const toggleTrustHelp = (e) => {
-    e.stopPropagation();
-    setShowTrustHelp(!showTrustHelp);
+  // تابع خروج از حساب
+  const handleLogout = () => {
+    signOut(auth)
+      .then(() => {
+        console.log("خروج موفق");
+        setUser(null);
+        navigate("/login"); // هدایت به صفحه ورود پس از خروج
+      })
+      .catch((error) => {
+        console.error("خطا در خروج:", error);
+      });
   };
 
   return (
     <div className="home-page">
+      {/* نمایش دکمه خروج فقط اگر کاربر وارد شده باشد */}
+      {user && (
+        <div className="logout-container">
+          <button className="logout-button" onClick={handleLogout}>
+            خروج از حساب
+          </button>
+        </div>
+      )}
+
       <div className="wallet-button-container">
         {/* دکمه اتصال والت */}
         <button
@@ -71,7 +68,7 @@ function Home() {
             : "Connect Wallet"}
         </button>
 
-        {/* دکمه Disconnect، فقط اگر والت وصل باشد */}
+        {/* دکمه Disconnect */}
         {walletAddress && (
           <button className="disconnect-button" onClick={disconnectWallet}>
             Disconnect
@@ -81,10 +78,10 @@ function Home() {
         {/* منوی پاپ‌آپ انتخاب والت */}
         {showWalletOptions && !walletAddress && (
           <div className="wallet-options-popup">
-            {/* تراست ولت */}
+            {/* گزینه تراست والت */}
             <button
               className="wallet-option trust"
-              onClick={() => connectWallet("trustwallet")}
+              onClick={() => connectWallet("Trust Wallet")}
             >
               <img
                 src="/logo1.png"
@@ -92,25 +89,12 @@ function Home() {
                 className="wallet-logo"
               />
               Trust Wallet
-              <span className="help-icon" onClick={toggleTrustHelp}>?</span>
             </button>
 
-            {/* پاپ‌آپ راهنمای تراست ولت */}
-            {showTrustHelp && (
-              <div className="trust-help-popup">
-                <p>
-                  To connect with Trust Wallet on mobile, please open this site
-                  in the <strong>DApp Browser</strong> of Trust Wallet
-                  or use <strong>WalletConnect</strong> to scan the QR code.
-                </p>
-                <button onClick={toggleTrustHelp}>Close</button>
-              </div>
-            )}
-
-            {/* متامسک */}
+            {/* گزینه متامسک */}
             <button
               className="wallet-option metamask"
-              onClick={() => connectWallet("metamask")}
+              onClick={() => connectWallet("MetaMask")}
             >
               <img
                 src="/logo2.png"

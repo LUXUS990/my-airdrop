@@ -4,10 +4,11 @@ import "./Friends.css"; // استایل جدا برای این صفحه
 function Friends() {
   const [inviteLink, setInviteLink] = useState("");
 
-  // تابع تولید لینک اختصاصی
+  // تابع تولید لینک اختصاصی که به صفحه اصلی هدایت می‌کند
   const generateInviteLink = () => {
     const userId = Math.random().toString(36).substr(2, 9); // تولید آی‌دی تصادفی
-    const link = '${window.location.origin}/invite/${userId}'; // اینجا باید از ` استفاده شود
+    // لینک دعوت به صفحه اصلی با پارامتر invite
+    const link = `https://luxus-society.vercel.app/?invite=${userId}`;
     setInviteLink(link);
   };
 
@@ -37,6 +38,10 @@ function Friends() {
           <button onClick={copyToClipboard}>Copy</button>
         </div>
       )}
+
+      <div className="reward-info">
+      <p>Earn 0.5 tokens per successful invite.</p>
+      </div>
     </div>
   );
 }

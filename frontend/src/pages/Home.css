@@ -24,7 +24,7 @@
 
 /* دکمه اصلی Connect Wallet */
 .wallet-button {
-  background-color: #4a4f5a;
+  background-color: #000000;
   border: none;
   padding: 12px 24px;
   font-size: 16px;
@@ -36,7 +36,7 @@
 }
 
 .wallet-button:hover {
-  background-color: #616774;
+  background-color: #000000;
   transform: scale(1.05);
 }
 
@@ -138,7 +138,7 @@
 }
 
 .claim-button {
-  background-color: #4a4f5a;
+  background-color: #070707;
   color: white;
   border: none;
   padding: 12px 24px;
@@ -182,7 +182,7 @@
   font-weight: bold;
   color: white;
   margin-top: 40px;
-  text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.8);
+  text-shadow: 0px 0px 10px rgb(231, 119, 14);
 }
 
 /* آیکن راهنما (؟) کنار دکمه تراست ولت */
@@ -238,4 +238,26 @@
 
 .trust-help-popup button:hover {
   background-color: #393d47;
+}.logout-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1000;
+}
+
+.logout-button {
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.logout-button:hover {
+  background-color: darkred;
+  transform: scale(1.05);
 }
