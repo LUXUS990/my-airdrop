@@ -2,6 +2,7 @@
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getAuth } from "firebase/auth";
+import { getFirestore } from "firebase/firestore"; // برای استفاده از Firestore
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
@@ -23,5 +24,8 @@ const analytics = getAnalytics(app);
 // Initialize Firebase Authentication
 const auth = getAuth(app);
 
+// Initialize Firestore
+const db = getFirestore(app);
+
 // Export the initialized services for use in your project
-export { app, analytics, auth };
+export { app, analytics, auth, db };

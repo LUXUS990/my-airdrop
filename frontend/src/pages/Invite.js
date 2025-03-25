@@ -1,15 +1,67 @@
-import React, { useState } from "react";
-import "./Friends.css"; // استایل جدا برای این صفحه
+import React, { useState, useEffect } from "react";
+import { auth, db } from "../firebaseConfig"; // افزودن اتصال به دیتابیس
+import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import "./Friends.css";
 
 function Friends() {
   const [inviteLink, setInviteLink] = useState("");
+  const [friends, setFriends] = useState([]);
 
-  // تابع تولید لینک اختصاصی که به صفحه اصلی هدایت می‌کند
-  const generateInviteLink = () => {
-    const userId = Math.random().toString(36).substr(2, 9); // تولید آی‌دی تصادفی
-    // لینک دعوت به صفحه اصلی با پارامتر invite
+  useEffect(() => {
+    if (auth.currentUser) {
+      fetchFriends(auth.currentUser.uid);
+    }
+  }, []);
+
+  // تولید لینک دعوت اختصاصی برای کاربر
+  const generateInviteLink = async () => {
+    if (!auth.currentUser) {
+      alert("Please log in first!");
+      return;
+    }
+
+    const userId = auth.currentUser.uid; // استفاده از UID واقعی کاربر
     const link = `https://luxus-society.vercel.app/?invite=${userId}`;
     setInviteLink(link);
+
+    // ذخیره در localStorage (برای بررسی راحت‌تر)
+    localStorage.setItem("inviteLink", link);
+  };
+
+  // خواندن پارامتر دعوت از آدرس مرورگر و ذخیره در دیتابیس
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const inviterId = urlParams.get("invite");
+
+    if (inviterId && auth.currentUser) {
+      saveInvite(inviterId, auth.currentUser.uid);
+    }
+  }, []);
+
+  // ذخیره اطلاعات دعوت در Firestore
+  const saveInvite = async (inviterId, newUserId) => {
+    try {
+      await addDoc(collection(db, "invites"), {
+        inviterId,
+        newUserId,
+        timestamp: new Date(),
+      });
+      console.log("Invitation saved!");
+    } catch (error) {
+      console.error("Error saving invite:", error);
+    }
+  };
+
+  // دریافت لیست دوستان دعوت‌شده
+  const fetchFriends = async (userId) => {
+    try {
+      const q = query(collection(db, "invites"), where("inviterId", "==", userId));
+      const querySnapshot = await getDocs(q);
+      const friendsList = querySnapshot.docs.map((doc) => doc.data().newUserId);
+      setFriends(friendsList);
+    } catch (error) {
+      console.error("Error fetching friends:", error);
+    }
   };
 
   // کپی لینک به کلیپ‌بورد
@@ -22,9 +74,11 @@ function Friends() {
     <div className="friends-container">
       <h1>Your Friends</h1>
       <ul>
-        <li>Friend 1</li>
-        <li>Friend 2</li>
-        <li>Friend 3</li>
+        {friends.length > 0 ? (
+          friends.map((friend, index) => <li key={index}>{friend}</li>)
+        ) : (
+          <li>No friends invited yet.</li>
+        )}
       </ul>
 
       <button onClick={generateInviteLink} className="invite-button">
@@ -40,7 +94,7 @@ function Friends() {
       )}
 
       <div className="reward-info">
-      <p>Earn 0.5 tokens per successful invite.</p>
+        <p>Earn 0.5 tokens per successful invite.</p>
       </div>
     </div>
   );
