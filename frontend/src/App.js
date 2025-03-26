@@ -4,8 +4,8 @@ import Home from "./pages/Home";
 import Path from "./pages/Path";
 import Friends from "./pages/Friends";
 import Invite from "./pages/Invite";
-import Login from "./pages/Login"; // صفحه ورود
-import { auth } from "./firebaseConfig"; // وارد کردن تنظیمات Firebase
+import Login from "./pages/Login";
+import { auth } from "./firebaseConfig";
 import "./App.css";
 
 function App() {
@@ -44,11 +44,11 @@ function App() {
             element={user ? <Path /> : <Navigate to="/login" />}
           />
           <Route
-            path="/Friends"
+            path="/friends" // تغییر از /Friends به /friends
             element={user ? <Friends /> : <Navigate to="/login" />}
           />
           <Route
-            path="/invite/:id"
+            path="/invite" // تغییر از /invite/:id به /invite
             element={user ? <Invite /> : <Navigate to="/login" />}
           />
         </Routes>
@@ -64,7 +64,7 @@ function App() {
               <span>📄</span>
               <p>Path</p>
             </Link>
-            <Link to={`/invite/${user.uid}`} className="nav-item">
+            <Link to="/friends" className="nav-item"> {/* تغییر از /invite/${user.uid} به /friends */}
               <span>👥</span>
               <p>Invite Friends</p>
             </Link>

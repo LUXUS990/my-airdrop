@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { auth, db } from "../firebaseConfig"; // اتصال به Firebase
-import { collection, addDoc, query, where, getDocs } from "firebase/firestore";
+import { auth, db } from "../firebaseConfig";
+import { collection, query, where, getDocs } from "firebase/firestore";
 import "./Friends.css";
 
 function Friends() {
@@ -13,43 +13,18 @@ function Friends() {
     }
   }, []);
 
-  // تابع ایجاد لینک دعوت
+  // تولید لینک دعوت
   const generateInviteLink = async () => {
     if (!auth.currentUser) {
       alert("Please log in first!");
       return;
     }
 
-    const userId = auth.currentUser.uid; // استفاده از UID کاربر به‌عنوان کد رفرال
-    const link = `https://luxus-society.vercel.app/invite/${userId}`;
+    const userId = auth.currentUser.uid;
+    const link = `https://luxus-society.vercel.app/invite?invite=${userId}`; // هدایت به /invite
     setInviteLink(link);
-
-    // ذخیره در localStorage برای نگهداری در سشن مرورگر
     localStorage.setItem("inviteLink", link);
-  };
-
-  // خواندن مقدار رفرال از URL هنگام ورود کاربر جدید
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const inviterId = urlParams.get("invite");
-
-    if (inviterId && auth.currentUser) {
-      saveInvite(inviterId, auth.currentUser.uid);
-    }
-  }, []);
-
-  // ذخیره اطلاعات دعوت در Firestore
-  const saveInvite = async (inviterId, newUserId) => {
-    try {
-      await addDoc(collection(db, "invites"), {
-        inviterId,
-        newUserId,
-        timestamp: new Date(),
-      });
-      console.log("Invitation saved!");
-    } catch (error) {
-      console.error("Error saving invite:", error);
-    }
+    console.log("Generated Invite Link:", link); // برای دیباگ
   };
 
   // دریافت لیست دوستان دعوت‌شده
@@ -57,40 +32,52 @@ function Friends() {
     try {
       const q = query(collection(db, "invites"), where("inviterId", "==", userId));
       const querySnapshot = await getDocs(q);
-      const friendsList = querySnapshot.docs.map((doc) => doc.data().newUserId);
+      const friendsList = [];
+      for (const doc of querySnapshot.docs) {
+        const friendId = doc.data().newUserId;
+        const userQuery = query(collection(db, "users"), where("uid", "==", friendId));
+        const userSnapshot = await getDocs(userQuery);
+        if (!userSnapshot.empty) {
+          friendsList.push({ id: friendId, name: userSnapshot.docs[0].data().name || friendId });
+        }
+      }
       setFriends(friendsList);
     } catch (error) {
       console.error("Error fetching friends:", error);
     }
   };
 
+  // کپی لینک به کلیپ‌بورد
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(inviteLink);
+    alert("Invite link copied!");
+  };
+
   return (
     <div className="friends-container">
-      <div className="friends-content">
-        <h1>Your Friends</h1>
-        <p>Invite your friends and earn rewards!</p>
-
-        <button className="invite-button" onClick={generateInviteLink}>
-          Generate Invite Link
-        </button>
-
-        {inviteLink && (
-          <div className="invite-section">
-            <input type="text" value={inviteLink} readOnly />
-            <button onClick={() => navigator.clipboard.writeText(inviteLink)}>
-              Copy
-            </button>
-          </div>
+      <h1>Your Friends</h1>
+      <ul>
+        {friends.length > 0 ? (
+          friends.map((friend, index) => <li key={index}>{friend.name}</li>)
+        ) : (
+          <li>No friends invited yet.</li>
         )}
+      </ul>
 
-        <h2>Invited Friends</h2>
-        <ul>
-          {friends.length > 0 ? (
-            friends.map((friend, index) => <li key={index}>{friend}</li>)
-          ) : (
-            <li>No friends invited yet.</li>
-          )}
-        </ul>
+      <button onClick={generateInviteLink} className="invite-button">
+        Generate Invite Link
+      </button>
+
+      {inviteLink && (
+        <div className="invite-section">
+          <p>Invite Link:</p>
+          <input type="text" value={inviteLink} readOnly />
+          <button onClick={copyToClipboard}>Copy</button>
+        </div>
+      )}
+
+      <div className="reward-info">
+        <p>Earn 0.5 tokens per successful invite.</p>
       </div>
     </div>
   );
