@@ -13,32 +13,33 @@ function Friends() {
     }
   }, []);
 
-  // تولید لینک دعوت
-  const generateInviteLink = async () => {
+  const generateInviteLink = () => {
     if (!auth.currentUser) {
       alert("Please log in first!");
       return;
     }
 
     const userId = auth.currentUser.uid;
-    const link = `https://luxus-society.vercel.app/invite?invite=${userId}`; // هدایت به /invite
+    const link = `https://luxus-society.vercel.app/login?referralCode=${userId}`;
     setInviteLink(link);
     localStorage.setItem("inviteLink", link);
-    console.log("Generated Invite Link:", link); // برای دیباگ
   };
 
-  // دریافت لیست دوستان دعوت‌شده
   const fetchFriends = async (userId) => {
     try {
-      const q = query(collection(db, "invites"), where("inviterId", "==", userId));
+      const q = query(collection(db, "referrals"), where("inviterId", "==", userId));
       const querySnapshot = await getDocs(q);
       const friendsList = [];
+      
       for (const doc of querySnapshot.docs) {
         const friendId = doc.data().newUserId;
         const userQuery = query(collection(db, "users"), where("uid", "==", friendId));
         const userSnapshot = await getDocs(userQuery);
         if (!userSnapshot.empty) {
-          friendsList.push({ id: friendId, name: userSnapshot.docs[0].data().name || friendId });
+          friendsList.push({
+            id: friendId,
+            name: userSnapshot.docs[0].data().name || friendId
+          });
         }
       }
       setFriends(friendsList);
@@ -47,7 +48,6 @@ function Friends() {
     }
   };
 
-  // کپی لینک به کلیپ‌بورد
   const copyToClipboard = () => {
     navigator.clipboard.writeText(inviteLink);
     alert("Invite link copied!");
@@ -58,7 +58,11 @@ function Friends() {
       <h1>Your Friends</h1>
       <ul>
         {friends.length > 0 ? (
-          friends.map((friend, index) => <li key={index}>{friend.name}</li>)
+          friends.map((friend) => (
+            <li key={friend.id}>
+              {friend.name} ({friend.id.slice(0, 6)}...)
+            </li>
+          ))
         ) : (
           <li>No friends invited yet.</li>
         )}
@@ -70,15 +74,15 @@ function Friends() {
 
       {inviteLink && (
         <div className="invite-section">
-          <p>Invite Link:</p>
-          <input type="text" value={inviteLink} readOnly />
+          <input 
+            type="text" 
+            value={inviteLink} 
+            readOnly 
+            onClick={(e) => e.target.select()}
+          />
           <button onClick={copyToClipboard}>Copy</button>
         </div>
       )}
-
-      <div className="reward-info">
-        <p>Earn 0.5 tokens per successful invite.</p>
-      </div>
     </div>
   );
 }

@@ -1,52 +1,54 @@
 import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { auth, db } from "../firebaseConfig";
-import { collection, addDoc } from "firebase/firestore";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 function Invite() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // خواندن inviterId از URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const inviterId = urlParams.get("invite");
+    const processInvite = async () => {
+      const params = new URLSearchParams(window.location.search);
+      const referralCode = params.get("referralCode");
 
-    console.log("Inviter ID from URL:", inviterId); // برای دیباگ
+      if (!referralCode) {
+        navigate("/");
+        return;
+      }
 
-    if (inviterId) {
-      // ذخیره inviterId تو localStorage برای استفاده بعد از لاگین
-      localStorage.setItem("inviterId", inviterId);
+      localStorage.setItem("referralCode", referralCode);
 
-      // مانیتور کردن وضعیت لاگین
       const unsubscribe = auth.onAuthStateChanged(async (user) => {
         if (user) {
-          // کاربر لاگین کرده، رفرال رو ثبت کن
           try {
-            await addDoc(collection(db, "invites"), {
-              inviterId,
+            await addDoc(collection(db, "referrals"), {
+              inviterId: referralCode,
               newUserId: user.uid,
-              timestamp: new Date(),
+              timestamp: serverTimestamp()
             });
-            console.log("Invitation saved!");
-            localStorage.removeItem("inviterId"); // پاک کردن بعد از ثبت
-            navigate("/friends"); // هدایت به صفحه دوستان
+            localStorage.removeItem("referralCode");
+            navigate("/dashboard?ref=success");
           } catch (error) {
-            console.error("Error saving invite:", error);
+            console.error("Referral save error:", error);
+            navigate("/dashboard?ref=error");
           }
         } else {
-          // کاربر لاگین نکرده، به صفحه لاگین هدایتش کن
           navigate("/login");
         }
       });
 
       return () => unsubscribe();
-    } else {
-      // اگه inviterId تو URL نبود، به صفحه اصلی هدایت کن
-      navigate("/");
-    }
+    };
+
+    processInvite();
   }, [navigate]);
 
-  return <div>Processing your invite...</div>;
+  return (
+    <div className="invite-container">
+      <div className="loading-spinner"></div>
+      <p>Processing your invitation...</p>
+    </div>
+  );
 }
 
 export default Invite;
