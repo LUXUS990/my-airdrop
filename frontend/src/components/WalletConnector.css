@@ -1,0 +1,38 @@
+.wallet-connect {
+    direction: rtl;
+    font-family: 'Vazir', sans-serif;
+    text-align: center;
+  }
+  
+  .connect-button {
+    background: #f6851b;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: all 0.3s;
+  }
+  
+  .connect-button:hover {
+    background: #e2761b;
+  }
+  
+  .wallet-info {
+    margin-top: 10px;
+  }
+  
+  .wallet-address {
+    background: #f8f9fa;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-family: monospace;
+    display: inline-block;
+  }
+  
+  .error-message {
+    color: #e74c3c;
+    margin-top: 10px;
+    font-size: 14px;
+  }

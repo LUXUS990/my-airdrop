@@ -1,31 +1,35 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { auth } from "../firebaseConfig";
-import { signOut } from "firebase/auth";
+import React, { useState } from "react";
+import Web3 from "web3";
 import "./Home.css";
 
 function Home() {
-  const navigate = useNavigate();
   const [walletAddress, setWalletAddress] = useState(null);
-  const [tokens, setTokens] = useState(0);
+  const [tokens, setTokens] = useState(100); // مقدار پیش‌فرض توکن‌ها
   const [showWalletOptions, setShowWalletOptions] = useState(false);
-  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    setTokens(100);
-  }, []);
-
-  // رصد وضعیت احراز هویت
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((currentUser) => {
-      setUser(currentUser);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  // تابع اتصال والت (فقط برای نمایش لاگ)
-  const connectWallet = (walletType) => {
+  // تابع اتصال والت (اتصال واقعی)
+  const connectWallet = async (walletType) => {
     console.log(`${walletType} Clicked`);
+    
+    if (!window.ethereum) {
+      alert("لطفاً MetaMask یا Trust Wallet را نصب کنید.");
+      return;
+    }
+
+    try {
+      // درخواست دسترسی به کیف پول
+      const accounts = await window.ethereum.request({
+        method: 'eth_requestAccounts',
+      });
+
+      // آدرس اولین حساب متصل شده را ذخیره کنید
+      const connectedAddress = accounts[0];
+      setWalletAddress(connectedAddress);
+      setShowWalletOptions(false);
+    } catch (error) {
+      console.error("اتصال به کیف پول با خطا مواجه شد:", error);
+      alert("اتصال به کیف پول با خطا مواجه شد.");
+    }
   };
 
   const disconnectWallet = () => {
@@ -33,30 +37,14 @@ function Home() {
     setShowWalletOptions(false);
   };
 
-  // تابع خروج از حساب
-  const handleLogout = () => {
-    signOut(auth)
-      .then(() => {
-        console.log("خروج موفق");
-        setUser(null);
-        navigate("/login"); // هدایت به صفحه ورود پس از خروج
-      })
-      .catch((error) => {
-        console.error("خطا در خروج:", error);
-      });
+  // تابع Claim توکن‌ها
+  const handleClaim = () => {
+    setTokens((prev) => prev + 50); // افزایش توکن‌ها پس از Claim
+    alert("50 LUX tokens claimed successfully!");
   };
 
   return (
     <div className="home-page">
-      {/* نمایش دکمه خروج فقط اگر کاربر وارد شده باشد */}
-      {user && (
-        <div className="logout-container">
-          <button className="logout-button" onClick={handleLogout}>
-            خروج از حساب
-          </button>
-        </div>
-      )}
-
       <div className="wallet-button-container">
         {/* دکمه اتصال والت */}
         <button
@@ -109,7 +97,9 @@ function Home() {
 
       {/* دکمه Claim */}
       <div className="claim-button-container">
-        <button className="claim-button">Claim</button>
+        <button className="claim-button" onClick={handleClaim}>
+          Claim
+        </button>
       </div>
 
       {/* لوگو و مقدار توکن */}
