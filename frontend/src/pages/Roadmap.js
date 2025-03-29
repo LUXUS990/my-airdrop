@@ -1,84 +1,41 @@
-import React, { useRef } from 'react';
+import React, { useRef } from 'react'; 
 import './Roadmap.css';
 
 function Roadmap() {
   const roadmapRef = useRef(null);
-  
-  const phases = [
-    {
-      title: "فاز اول - راه‌اندازی",
-      date: "سه‌ماهه اول ۱۴۰۳",
-      completed: true,
-      milestones: [
-        "توسعه قرارداد هوشمند و تست نتورک",
-        "عرضه اولیه توکن (Token Generation Event)",
-        "راه‌اندازی وبسایت رسمی پروژه",
-        "جذب سرمایه‌گذاران اولیه و شرکای استراتژیک"
-      ]
-    },
-    {
-      title: "فاز دوم - توسعه",
-      date: "سه‌ماهه دوم ۱۴۰۳",
-      completed: true,
-      milestones: [
-        "راه‌اندازی استخر نقدینگی در صرافی‌های DEX",
-        "همکاری با پروژه‌های استراتژیک در اکوسیستم",
-        "برگزاری کمپین ایردراپ برای جامعه کاربری",
-        "پیاده‌سازی سیستم پاداش برای هولدرها"
-      ]
-    },
-    {
-      title: "فاز سوم - گسترش",
-      date: "سه‌ماهه سوم ۱۴۰۳",
-      completed: false,
-      milestones: [
-        "راه‌اندازی نسخه اولیه صرافی غیرمتمرکز پروژه",
-        "ادغام با شبکه‌های لایه ۲ برای کاهش کارمزدها",
-        "راه‌اندیمی سیستم استیکینگ با سود روزانه",
-        "اضافه شدن به صرافی‌های متمرکز بزرگ"
-      ]
-    },
-    {
-      title: "فاز چهارم - بلوغ",
-      date: "سه‌ماهه چهارم ۱۴۰۳",
-      completed: false,
-      milestones: [
-        "راه‌اندازی سیستم DAO برای حکومت‌دهی غیرمتمرکز",
-        "گسترش به شبکه‌های چندزنجیره‌ای",
-        "پیاده‌سازی سیستم وام‌دهی غیرمتمرکز",
-        "رسیدن به مرحله سوددهی و درآمدزایی پایدار"
-      ]
-    }
+
+  // اطلاعات مایلستون‌ها و توضیحات هر فاز
+  const milestones = [
+    { title: "Development of the smart contract and test network", description: "Building the smart contract and testing it on the test network." },
+    { title: "Token Generation Event (TGE)", description: "Token distribution event for early investors and partners." },
+    { title: "Official website launch", description: "Launching the official website for the project." },
+    { title: "Attracting initial investors and strategic partners", description: "Building relationships and attracting investors for the project." },
+    { title: "Liquidity pool setup on DEX exchanges", description: "Setting up liquidity pools on decentralized exchanges for token trading." },
+    { title: "Collaborations with strategic ecosystem projects", description: "Partnering with other projects in the ecosystem for mutual growth." },
+    { title: "Airdrop campaign for the community", description: "Airdrop of tokens to the community to increase awareness and engagement." },
+    { title: "Implementation of a reward system for holders", description: "Reward system for token holders to incentivize long-term holding." },
+    { title: "Initial launch of the decentralized exchange (DEX)", description: "Launching the first version of the decentralized exchange (DEX)." },
+    { title: "Integration with Layer 2 networks for lower transaction fees", description: "Reducing transaction fees by integrating with Layer 2 solutions." },
+    { title: "Deployment of staking system with daily rewards", description: "Implementing a staking system with rewards for stakers." },
+    { title: "Listing on major centralized exchanges (CEX)", description: "Listing the token on major centralized exchanges for wider access." },
+    { title: "Launch of DAO governance system", description: "Launching the DAO system to allow token holders to participate in decision-making." },
+    { title: "Expansion to multi-chain networks", description: "Expanding the project to support multiple blockchain networks." },
+    { title: "Implementation of decentralized lending system", description: "Implementing a decentralized lending platform for users to borrow and lend tokens." },
+    { title: "Achieving profitability and sustainable revenue", description: "The project reaches profitability and sustainable revenue streams." }
   ];
 
   return (
     <div className="roadmap-container" ref={roadmapRef}>
-      <h1 className="roadmap-title">نقشه راه پروژه</h1>
-      
+      <h1 className="roadmap-title">Project Roadmap</h1>
+
       <div className="timeline-scroll-container">
         <div className="timeline">
-          {phases.map((phase, index) => (
-            <div 
-              key={index}
-              className={`timeline-item ${phase.completed ? 'completed' : ''} ${index === 2 ? 'current' : ''}`}
-            >
+          {milestones.map((milestone, index) => (
+            <div key={index} className="timeline-item">
               <div className="timeline-item-content">
-                <div className="phase-header">
-                  <h3>{phase.title}</h3>
-                  <span className="phase-date">{phase.date}</span>
-                </div>
-                <ul className="milestones">
-                  {phase.milestones.map((milestone, i) => (
-                    <li key={i}>
-                      {phase.completed ? (
-                        <span className="completed-icon">✓</span>
-                      ) : (
-                        <span className="pending-icon">•</span>
-                      )}
-                      {milestone}
-                    </li>
-                  ))}
-                </ul>
+                <span className="pending-icon">•</span>
+                {milestone.title}
+                <div className="phase-description">{milestone.description}</div>
               </div>
             </div>
           ))}
@@ -86,22 +43,22 @@ function Roadmap() {
       </div>
       
       <div className="token-info">
-        <h2>اطلاعات فنی توکن</h2>
+        <h2>Token Information</h2>
         <div className="info-grid">
           <div className="info-item">
-            <span className="info-label">نام توکن:</span>
+            <span className="info-label">Token Name:</span>
             <span className="info-value">LUXUS</span>
           </div>
           <div className="info-item">
-            <span className="info-label">تعداد کل:</span>
+            <span className="info-label">Total Supply:</span>
             <span className="info-value">30,000,000</span>
           </div>
           <div className="info-item">
-            <span className="info-label">شبکه:</span>
+            <span className="info-label">Network:</span>
             <span className="info-value">BSC</span>
           </div>
           <div className="info-item">
-            <span className="info-label">قرارداد:</span>
+            <span className="info-label">Contract Address:</span>
             <span className="info-value">0x12...3456</span>
           </div>
         </div>

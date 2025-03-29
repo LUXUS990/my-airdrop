@@ -3,12 +3,12 @@ import './BuyToken.css';
 
 function BuyToken() {
   const [tokenAmount, setTokenAmount] = useState(0);
-  const [maxTokens] = useState(1000);
+  const [maxTokens] = useState(30000000); // Total tokens available (30 million)
   const [progress, setProgress] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
-  const [tokenPrice] = useState(0.01); // قیمت هر توکن بر حسب BNB
+  const [tokenPrice] = useState(0.01); // Price per token in BNB
 
-  // محاسبه پیشرفت و مبلغ
+  // Calculate progress and total amount
   useEffect(() => {
     const calculatedProgress = (tokenAmount / maxTokens) * 100;
     setProgress(Math.min(calculatedProgress, 100));
@@ -16,21 +16,21 @@ function BuyToken() {
 
   const handleIncrement = () => {
     if (tokenAmount < maxTokens) {
-      setTokenAmount(prev => Math.min(prev + 100, maxTokens));
+      setTokenAmount(prev => Math.min(prev + 100, maxTokens)); // Increment by 100 tokens
     }
   };
 
   const handleDecrement = () => {
     if (tokenAmount > 0) {
-      setTokenAmount(prev => Math.max(prev - 100, 0));
+      setTokenAmount(prev => Math.max(prev - 100, 0)); // Decrement by 100 tokens
     }
   };
 
   return (
     <div className="token-purchase-container">
-      <h2 className="section-title">خرید توکن اختصاصی</h2>
+      <h2 className="section-title">Buy Token</h2>
       
-      {/* نمودار دایره‌ای تعاملی */}
+      {/* Interactive progress ring */}
       <div 
         className="progress-ring-container"
         onMouseEnter={() => setIsHovering(true)}
@@ -69,19 +69,19 @@ function BuyToken() {
         <div className="progress-content">
           {isHovering ? (
             <>
-              <div className="progress-value">{tokenAmount} توکن</div>
+              <div className="progress-value">{tokenAmount} Tokens</div>
               <div className="progress-text">{(tokenPrice * tokenAmount).toFixed(2)} BNB</div>
             </>
           ) : (
             <>
               <div className="progress-value">{Math.round(progress)}%</div>
-              <div className="progress-text">پیشرفت خرید</div>
+              <div className="progress-text">Purchase Progress</div>
             </>
           )}
         </div>
       </div>
 
-      {/* کنترل‌های خرید */}
+      {/* Purchase controls */}
       <div className="token-controls">
         <button className="control-btn" onClick={handleDecrement}>
           -
@@ -95,7 +95,7 @@ function BuyToken() {
             min="0"
             max={maxTokens}
           />
-          <span>توکن</span>
+          <span>Tokens</span>
         </div>
         
         <button className="control-btn" onClick={handleIncrement}>
@@ -103,24 +103,24 @@ function BuyToken() {
         </button>
       </div>
 
-      {/* اطلاعات پرداخت */}
+      {/* Payment details */}
       <div className="payment-details">
         <div className="detail-row">
-          <span>قیمت هر توکن:</span>
+          <span>Price per Token:</span>
           <span>{tokenPrice} BNB</span>
         </div>
         <div className="detail-row">
-          <span>مبلغ کل:</span>
+          <span>Total Amount:</span>
           <span>{(tokenPrice * tokenAmount).toFixed(6)} BNB</span>
         </div>
         <div className="detail-row">
-          <span>توکن باقیمانده:</span>
+          <span>Remaining Tokens:</span>
           <span>{maxTokens - tokenAmount}</span>
         </div>
       </div>
 
       <button className="purchase-btn" disabled={tokenAmount <= 0}>
-        خرید توکن
+        Buy Token
       </button>
     </div>
   );

@@ -66,35 +66,21 @@
   justify-content: flex-start;
 }
 
-.timeline-item.completed .phase-header h3 {
-  color: #00b09b;
-}
-
-.timeline-item.current .phase-header h3 {
-  color: #3498db;
-  font-weight: bold;
-}
-
+/* حذف پارت‌بندی‌های اضافی */
 .timeline-item-content {
-  width: calc(50% - 2rem);
+  width: 100%;
   padding: 1.5rem;
   background: #fff;
   border-radius: 12px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
   position: relative;
   z-index: 2;
+  display: block;
+  overflow: visible;  /* از پنهان شدن محتوا جلوگیری می‌کند */
+  margin: 0; /* حذف فاصله‌ها */
 }
 
-.timeline-item:nth-child(even) .timeline-item-content {
-  margin-right: auto;
-  margin-left: 2rem;
-}
-
-.timeline-item:nth-child(odd) .timeline-item-content {
-  margin-left: auto;
-  margin-right: 2rem;
-}
-
+/* استایل برای هدر هر فاز */
 .phase-header {
   display: flex;
   justify-content: space-between;
@@ -117,6 +103,7 @@
   color: #555;
 }
 
+/* حذف پارت‌بندی‌ها و فاصله‌ها برای milestones */
 .milestones {
   padding-right: 1.5rem;
   margin: 0;
@@ -131,16 +118,17 @@
   word-break: break-word;
 }
 
-.completed-icon {
-  color: #00b09b;
-  margin-left: 0.5rem;
-  font-weight: bold;
-}
-
-.pending-icon {
-  color: #3498db;
-  margin-left: 0.5rem;
-  font-weight: bold;
+/* استایل برای بخش توضیحات فاز */
+.phase-description {
+  font-size: 0.95rem;
+  color: #7f8c8d;
+  margin-top: 1rem;
+  word-break: break-word;
+  display: block;
+  background-color: #f1f1f1;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0; /* حذف فاصله پایین */
 }
 
 /* بخش اطلاعات توکن */
@@ -204,7 +192,7 @@
   
   .timeline-item:nth-child(even) .timeline-item-content,
   .timeline-item:nth-child(odd) .timeline-item-content {
-    margin-right: 2rem;
+    margin-right: 0;
     margin-left: 0;
   }
   
