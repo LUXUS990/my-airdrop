@@ -40,7 +40,7 @@ const { connectors } = getDefaultWallets({
 
 // پیکربندی wagmi
 const wagmiConfig = createConfig({
-  autoConnect: true,
+  autoConnect: false, // برای تست دستی بهتره از این حالت استفاده کنی
   connectors: [
     new MetaMaskConnector({ chains }),
     new WalletConnectConnector({
