@@ -2,35 +2,44 @@ import React, { useState, useEffect } from 'react';
 import './BuyToken.css';
 
 function BuyToken() {
+  // حداکثر توکن قابل خرید توسط کاربر
+  const userPurchaseLimit = 500;
+  // کل توکن‌های موجود در فروش (مثلاً 30 میلیون)
+  const totalSupply = 30000000;
+  // تعداد توکن‌های فروخته شده تا کنون (برای مثال، باید از قرارداد هوشمند یا API دریافت شود)
+  const overallSold = 1234567; // این مقدار نمونه است
+
   const [tokenAmount, setTokenAmount] = useState(0);
-  const [maxTokens] = useState(30000000); // Total tokens available (30 million)
   const [progress, setProgress] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
-  const [tokenPrice] = useState(0.01); // Price per token in BNB
+  const tokenPrice = 0.01; // قیمت هر توکن به BNB
 
-  // Calculate progress and total amount
+  // محاسبه درصد فروش کل
   useEffect(() => {
-    const calculatedProgress = (tokenAmount / maxTokens) * 100;
+    const calculatedProgress = (overallSold / totalSupply) * 100;
     setProgress(Math.min(calculatedProgress, 100));
-  }, [tokenAmount, maxTokens]);
+  }, [overallSold, totalSupply]);
 
   const handleIncrement = () => {
-    if (tokenAmount < maxTokens) {
-      setTokenAmount(prev => Math.min(prev + 100, maxTokens)); // Increment by 100 tokens
+    if (tokenAmount < userPurchaseLimit) {
+      setTokenAmount(prev => Math.min(prev + 1, userPurchaseLimit));
     }
   };
 
   const handleDecrement = () => {
     if (tokenAmount > 0) {
-      setTokenAmount(prev => Math.max(prev - 100, 0)); // Decrement by 100 tokens
+      setTokenAmount(prev => Math.max(prev - 1, 0));
     }
   };
 
   return (
     <div className="token-purchase-container">
-      <h2 className="section-title">Buy Token</h2>
+      {/* Top bar */}
+      <div className="top-bar">
+        <h2>Buy LUXUS Tokens</h2>
+      </div>
       
-      {/* Interactive progress ring */}
+      {/* Interactive progress ring showing overall sale progress */}
       <div 
         className="progress-ring-container"
         onMouseEnter={() => setIsHovering(true)}
@@ -55,8 +64,8 @@ function BuyToken() {
             r="80"
             cx="100"
             cy="100"
-            strokeDasharray={`${progress * 5.02} 502`}
-            style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
+            strokeDasharray={`${progress * 5.02} 502}
+            style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }`}
           />
           <defs>
             <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -69,41 +78,37 @@ function BuyToken() {
         <div className="progress-content">
           {isHovering ? (
             <>
-              <div className="progress-value">{tokenAmount} Tokens</div>
-              <div className="progress-text">{(tokenPrice * tokenAmount).toFixed(2)} BNB</div>
+              <div className="progress-value">{overallSold} Sold</div>
+              <div className="progress-text">{(tokenPrice * overallSold).toFixed(2)} BNB</div>
             </>
           ) : (
             <>
               <div className="progress-value">{Math.round(progress)}%</div>
-              <div className="progress-text">Purchase Progress</div>
+              <div className="progress-text">Total Sale Progress</div>
             </>
           )}
         </div>
       </div>
 
-      {/* Purchase controls */}
+      {/* Purchase controls for user */}
       <div className="token-controls">
-        <button className="control-btn" onClick={handleDecrement}>
-          -
-        </button>
+        <button className="control-btn" onClick={handleDecrement}>-</button>
         
         <div className="token-amount-display">
           <input
             type="number"
             value={tokenAmount}
-            onChange={(e) => setTokenAmount(Math.min(Number(e.target.value), maxTokens))}
+            onChange={(e) => setTokenAmount(Math.min(Number(e.target.value), userPurchaseLimit))}
             min="0"
-            max={maxTokens}
+            max={userPurchaseLimit}
           />
           <span>Tokens</span>
         </div>
         
-        <button className="control-btn" onClick={handleIncrement}>
-          +
-        </button>
+        <button className="control-btn" onClick={handleIncrement}>+</button>
       </div>
 
-      {/* Payment details */}
+      {/* Payment details for user's purchase */}
       <div className="payment-details">
         <div className="detail-row">
           <span>Price per Token:</span>
@@ -114,8 +119,8 @@ function BuyToken() {
           <span>{(tokenPrice * tokenAmount).toFixed(6)} BNB</span>
         </div>
         <div className="detail-row">
-          <span>Remaining Tokens:</span>
-          <span>{maxTokens - tokenAmount}</span>
+          <span>Remaining Purchase Limit:</span>
+          <span>{userPurchaseLimit - tokenAmount}</span>
         </div>
       </div>
 
