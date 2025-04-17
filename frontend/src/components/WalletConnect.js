@@ -1,69 +1,53 @@
 import React from 'react';
-import { WagmiConfig, createConfig, configureChains, mainnet } from 'wagmi';
-import { publicProvider } from 'wagmi/providers/public';
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask';
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
-import { RainbowKitProvider, ConnectButton, getDefaultWallets } from '@rainbow-me/rainbowkit';
-import '@rainbow-me/rainbowkit/styles.css';
+import './WalletConnect.css';
 
-// تنظیم شبکه BSC
-const bscChain = {
-  id: 56,
-  name: 'Binance Smart Chain',
-  network: 'bsc',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'BNB',
-    symbol: 'BNB',
-  },
-  rpcUrls: {
-    public: { http: ['https://bsc-dataseed.binance.org/'] },
-    default: { http: ['https://bsc-dataseed.binance.org/'] },
-  },
-  blockExplorers: {
-    default: { name: 'BscScan', url: 'https://bscscan.com' },
-  },
-};
+const WalletConnect = () => {
+  const connectMetaMask = async () => {
+    if (window.ethereum) {
+      try {
+        // درخواست دسترسی به حساب‌ها
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        alert(متصل شدید به MetaMask. آدرس شما: ${accounts[0]});
+        // اینجا می‌توانید کد خرید توکن یا تراکنش‌های دیگر را اضافه کنید.
+      } catch (error) {
+        console.error(error);
+        alert('خطا در اتصال به MetaMask');
+      }
+    } else {
+      // هدایت به deep link متامسک در صورت عدم وجود provider
+      window.location.href = https://metamask.app.link/dapp/${window.location.host};
+    }
+  };
 
-// تنظیم زنجیره‌ها و ارائه‌دهنده‌ها
-const { chains, publicClient } = configureChains(
-  [bscChain, mainnet],
-  [publicProvider()]
-);
+  const connectTrustWallet = async () => {
+    if (window.ethereum) {
+      try {
+        // درخواست دسترسی به حساب‌ها
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        alert(متصل شدید به Trust Wallet. آدرس شما: ${accounts[0]});
+      } catch (error) {
+        console.error(error);
+        alert('خطا در اتصال به Trust Wallet');
+      }
+    } else {
+      // هدایت به deep link مخصوص Trust Wallet در صورت عدم وجود provider
+      window.location.href = https://link.trustwallet.com/open_url?coin=ethereum&url=${encodeURIComponent(window.location.href)};
+    }
+  };
 
-// اتصال کیف پول‌ها
-const { connectors } = getDefaultWallets({
-  appName: 'Luxus Token Sale',
-  projectId: 'ba2fdfc93f10b60f69d3347475fe40ee', // جایگزین کنید با WalletConnect Project ID خودتان
-  chains,
-});
-
-// پیکربندی wagmi
-const wagmiConfig = createConfig({
-  autoConnect: false, // برای تست دستی بهتره از این حالت استفاده کنی
-  connectors: [
-    new MetaMaskConnector({ chains }),
-    new WalletConnectConnector({
-      chains,
-      options: {
-        projectId: 'ba2fdfc93f10b60f69d3347475fe40ee', // جایگزین کنید با WalletConnect Project ID خودتان
-        showQrModal: true,
-      },
-    }),
-  ],
-  publicClient,
-});
-
-function WalletConnect() {
   return (
-    <WagmiConfig config={wagmiConfig}>
-      <RainbowKitProvider chains={chains}>
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
-          <ConnectButton />
-        </div>
-      </RainbowKitProvider>
-    </WagmiConfig>
+    <div className="wallet-container">
+      <h1>اتصال به MetaMask یا Trust Wallet</h1>
+      <div className="button-group">
+        <button className="wallet-button" onClick={connectMetaMask}>
+          اتصال به MetaMask
+        </button>
+        <button className="wallet-button" onClick={connectTrustWallet}>
+          اتصال به Trust Wallet
+        </button>
+      </div>
+    </div>
   );
-}
+};
 
 export default WalletConnect;

@@ -1,237 +1,215 @@
-/* استایل‌های پایه */
-.roadmap-container {
-  max-width: 100%;
-  height: 100vh;
-  margin: 0 auto;
-  padding: 1rem;
-  font-family: 'Vazir', 'Segoe UI', Tahoma, sans-serif;
-  direction: rtl;
-  text-align: right;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+/* فونت دست‌نویس برای حس کاغذ */
+@import url('https://fonts.googleapis.com/css2?family=Handlee&family=Roboto:wght@400;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
+body {
+  font-family: 'Handlee', cursive;
+  background: #f4f1e9;
+  color: #333;
+}
+
+/* کانتینر اصلی */
+.roadmap-container {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fffef7;
+  border-radius: 10px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  min-height: 100vh;
+}
+
+/* عنوان نقشه راه */
 .roadmap-title {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
   text-align: center;
   color: #2c3e50;
-  margin: 1rem 0;
-  font-size: 1.8rem;
-  position: relative;
-  flex-shrink: 0;
+  margin: 20px 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
-.roadmap-title::after {
-  content: '';
-  display: block;
-  width: 80px;
-  height: 4px;
-  background: linear-gradient(to right, #00b09b, #96c93d);
-  margin: 0.5rem auto;
-  border-radius: 2px;
+/* چیدمان محتوا */
+.roadmap-content {
+  display: flex;
+  gap: 20px;
+  flex-wrap: wrap;
 }
 
-/* کانتینر اسکرول */
+/* اطلاعات توکن */
+.token-info {
+  flex: 0 0 220px;
+  background: #fffef7;
+  padding: 10px;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.token-info h2 {
+  font-family: 'Roboto', sans-serif;
+  font-size: 1.2rem;
+  color: #2c3e50;
+  margin-bottom: 10px;
+}
+
+.info-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+}
+
+.info-label {
+  font-weight: 400;
+  color: #7f8c8d;
+}
+
+.info-value {
+  font-weight: 700;
+  color: #333;
+}
+
+/* تایم‌لاین */
 .timeline-scroll-container {
   flex: 1;
+  padding: 10px 0;
+  max-height: calc(100vh - 200px);
   overflow-y: auto;
-  padding: 0 1rem;
-  margin: 0 -1rem;
+  scrollbar-width: thin;
+  scrollbar-color: #7f8c8d #f4f1e9;
 }
 
-/* خط زمانی */
+.timeline-scroll-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.timeline-scroll-container::-webkit-scrollbar-thumb {
+  background: #7f8c8d;
+  border-radius: 10px;
+}
+
+.timeline-scroll-container::-webkit-scrollbar-track {
+  background: #f4f1e9;
+}
+
 .timeline {
-  position: relative;
-  padding: 0 1rem 2rem;
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.timeline::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  right: 50%;
-  transform: translateX(50%);
-  width: 2px;
-  background: #e0e0e0;
-  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  padding: 0 15px;
 }
 
 .timeline-item {
   position: relative;
-  margin-bottom: 2rem;
-  display: flex;
-  justify-content: flex-start;
+  padding-left: 30px;
 }
 
-/* حذف پارت‌بندی‌های اضافی */
 .timeline-item-content {
-  width: 100%;
-  padding: 1.5rem;
-  background: #fff;
-  border-radius: 12px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-  position: relative;
-  z-index: 2;
-  display: block;
-  overflow: visible;  /* از پنهان شدن محتوا جلوگیری می‌کند */
-  margin: 0; /* حذف فاصله‌ها */
-}
-
-/* استایل برای هدر هر فاز */
-.phase-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-}
-
-.phase-header h3 {
-  margin: 0;
-  font-size: 1.2rem;
-  color: #7f8c8d;
-}
-
-.phase-date {
-  background: #f8f9fa;
-  padding: 0.3rem 0.8rem;
-  border-radius: 20px;
-  font-size: 0.9rem;
-  color: #555;
-}
-
-/* حذف پارت‌بندی‌ها و فاصله‌ها برای milestones */
-.milestones {
-  padding-right: 1.5rem;
-  margin: 0;
-}
-
-.milestones li {
-  margin-bottom: 0.8rem;
-  line-height: 1.6;
-  position: relative;
-  list-style-type: none;
-  font-size: 0.95rem;
-  word-break: break-word;
-}
-
-/* استایل برای بخش توضیحات فاز */
-.phase-description {
-  font-size: 0.95rem;
-  color: #7f8c8d;
-  margin-top: 1rem;
-  word-break: break-word;
-  display: block;
-  background-color: #f1f1f1;
-  border-radius: 8px;
-  padding: 1rem;
-  margin-bottom: 0; /* حذف فاصله پایین */
-}
-
-/* بخش اطلاعات توکن */
-.token-info {
-  background: #f8f9fa;
-  border-radius: 12px;
-  padding: 1.5rem;
-  margin-top: auto;
-  flex-shrink: 0;
-}
-
-.token-info h2 {
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  font-size: 1.3rem;
-}
-
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 1rem;
-}
-
-.info-item {
-  background: #fff;
-  padding: 0.8rem;
-  border-radius: 8px;
+  font-size: 1rem;
+  background: #fffef7;
+  padding: 10px 15px;
+  border-radius: 5px;
+  border-left: 3px solid #e74c3c;
+  color: #333;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
-.info-label {
-  display: block;
-  font-weight: 600;
-  color: #7f8c8d;
-  margin-bottom: 0.3rem;
-  font-size: 0.85rem;
-}
-
-.info-value {
+.pending-icon {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
   font-size: 1rem;
-  color: #2c3e50;
+  color: #e74c3c;
 }
 
-/* رسپانسیو برای موبایل */
+/* خط عمودی تایم‌لاین */
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: 10px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: #7f8c8d;
+  z-index: -1;
+}
+
+.timeline-item:first-child::before {
+  top: 50%;
+}
+
+.timeline-item:last-child::before {
+  bottom: 50%;
+}
+
+/* طراحی ریسپانسیو */
 @media (max-width: 768px) {
+  .roadmap-container {
+    margin: 10px;
+    padding: 15px;
+  }
+
   .roadmap-title {
     font-size: 1.5rem;
-    margin-bottom: 0.5rem;
   }
-  
-  .timeline::before {
-    right: 2rem;
-  }
-  
-  .timeline-item-content {
-    width: calc(100% - 4rem);
-    padding: 1.2rem;
-  }
-  
-  .timeline-item:nth-child(even) .timeline-item-content,
-  .timeline-item:nth-child(odd) .timeline-item-content {
-    margin-right: 0;
-    margin-left: 0;
-  }
-  
-  .phase-header {
+
+  .roadmap-content {
     flex-direction: column;
-    align-items: flex-start;
   }
-  
-  .phase-date {
-    margin-top: 0.5rem;
+
+  .token-info {
+    flex: 0 0 auto;
+    width: 100%;
+    max-width: 220px;
   }
-  
-  .milestones li {
+
+  .timeline-item-content {
     font-size: 0.9rem;
-  }
-  
-  .info-grid {
-    grid-template-columns: 1fr 1fr;
+    padding: 8px 12px;
   }
 }
 
 @media (max-width: 480px) {
   .roadmap-container {
-    padding: 0.5rem;
+    margin: 5px;
+    padding: 10px;
   }
-  
+
   .roadmap-title {
     font-size: 1.3rem;
   }
-  
+
+  .timeline {
+    padding: 0 10px;
+  }
+
+  .timeline-item {
+    padding-left: 25px;
+  }
+
   .timeline-item-content {
-    padding: 1rem;
+    font-size: 0.85rem;
   }
-  
+
+  .pending-icon {
+    font-size: 0.8rem;
+  }
+
   .token-info {
-    padding: 1rem;
-  }
-  
-  .info-grid {
-    grid-template-columns: 1fr;
+    width: 100%;
+    max-width: none;
   }
 }

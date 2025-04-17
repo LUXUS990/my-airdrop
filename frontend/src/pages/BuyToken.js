@@ -1,62 +1,332 @@
 import React, { useState, useEffect } from 'react';
+import Web3 from 'web3';
 import './BuyToken.css';
-
+/* global BigInt */
 function BuyToken() {
-  // حداکثر توکن قابل خرید توسط کاربر
-  const userPurchaseLimit = 500;
-  // کل توکن‌های موجود در فروش (مثلاً 30 میلیون)
-  const totalSupply = 30000000;
-  // تعداد توکن‌های فروخته شده تا کنون (برای مثال، باید از قرارداد هوشمند یا API دریافت شود)
-  const overallSold = 1234567; // این مقدار نمونه است
-
+  const [web3, setWeb3] = useState(null);
+  const [account, setAccount] = useState(null);
   const [tokenAmount, setTokenAmount] = useState(0);
   const [progress, setProgress] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
-  const tokenPrice = 0.01; // قیمت هر توکن به BNB
+  const [metaMaskError, setMetaMaskError] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // محاسبه درصد فروش کل
+  const userPurchaseLimit = 500;
+  const totalSupply = 30000000;
+  const overallSold = 1234567;
+  const TOKEN_PRICE_BNB = 0.002;
+
+  const presaleContractAddress = "0xd9f85763f01427d48590e5570b4c6c7c07838c7d";
+  const presaleABI = [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_token",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableInvalidOwner",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "account",
+          "type": "address"
+        }
+      ],
+      "name": "OwnableUnauthorizedAccount",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferred",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "buyer",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "bnbSpent",
+          "type": "uint256"
+        }
+      ],
+      "name": "TokensPurchased",
+      "type": "event"
+    },
+    {
+      "inputs": [],
+      "name": "MAX_TOKENS_PER_BUY",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "TOKEN_PRICE_BNB",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "TOTAL_SALE_SUPPLY",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_tokenAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "buyTokens",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "luxusToken",
+      "outputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "totalSold",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdrawFunds",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdrawUnsoldTokens",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    }
+  ];
+
+  useEffect(() => {
+    const connectToMetaMask = async () => {
+      if (window.ethereum) {
+        try {
+          const web3Instance = new Web3(window.ethereum);
+          setWeb3(web3Instance);
+          const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+          setAccount(accounts[0]);
+          setMetaMaskError(null);
+        } catch (err) {
+          setMetaMaskError("Failed to connect to MetaMask. Please try again.");
+        }
+      } else {
+        setMetaMaskError("MetaMask is not installed. Please install MetaMask to proceed.");
+      }
+    };
+    connectToMetaMask();
+  }, []);
+
   useEffect(() => {
     const calculatedProgress = (overallSold / totalSupply) * 100;
     setProgress(Math.min(calculatedProgress, 100));
-  }, [overallSold, totalSupply]);
+  }, []);
 
   const handleIncrement = () => {
-    if (tokenAmount < userPurchaseLimit) {
-      setTokenAmount(prev => Math.min(prev + 1, userPurchaseLimit));
-    }
+    setTokenAmount(prev => Math.min(prev + 1, userPurchaseLimit));
   };
 
   const handleDecrement = () => {
-    if (tokenAmount > 0) {
-      setTokenAmount(prev => Math.max(prev - 1, 0));
+    setTokenAmount(prev => Math.max(prev - 1, 0));
+  };
+
+  const handleTokenAmountChange = (e) => {
+    const value = Number(e.target.value);
+    if (value >= 0 && value <= userPurchaseLimit) {
+      setTokenAmount(value);
+    }
+  };
+
+  const handleMaxPurchase = () => {
+    setTokenAmount(userPurchaseLimit);
+  };
+
+  const handleSliderChange = (e) => {
+    setTokenAmount(Number(e.target.value));
+  };
+
+  const handleBuyToken = async () => {
+    if (!web3 || !account) {
+      setMetaMaskError("Please connect to MetaMask first.");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const presaleContract = new web3.eth.Contract(presaleABI, presaleContractAddress);
+      const priceInWei = web3.utils.toWei(TOKEN_PRICE_BNB.toString(), 'ether');
+      const totalPrice = BigInt(priceInWei) * BigInt(tokenAmount);
+      const tokenAmountInWei = BigInt(tokenAmount) * 10n ** 18n;
+
+      await presaleContract.methods.buyTokens(tokenAmountInWei.toString()).send({
+        from: account,
+        value: totalPrice.toString(),
+      });
+
+      alert("Tokens purchased successfully!");
+
+      if (window.ethereum) {
+        await window.ethereum.request({
+          method: 'wallet_watchAsset',
+          params: {
+            type: 'ERC20',
+            options: {
+              address: '0xc4bfe74dd0d47d82d072feeb237a1d9375fa4b2d',
+              symbol: 'LUX',
+              decimals: 18,
+              image: 'https://luxus-token.com/logo.png',
+            },
+          },
+        });
+      }
+    } catch (error) {
+      alert("Error buying tokens: " + (error.message || "Unknown error"));
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
     <div className="token-purchase-container">
-      {/* Top bar */}
-      <div className="top-bar">
-        <h2>Buy LUXUS Tokens</h2>
-      </div>
-      
-      {/* Interactive progress ring showing overall sale progress */}
-      <div 
+      <h2 className="section-title">Buy LUXUS Tokens</h2>
+
+      {metaMaskError && <div className="error-message">{metaMaskError}</div>}
+
+      <div
         className="progress-ring-container"
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
+        onTouchStart={() => setIsHovering(true)}
+        onTouchEnd={() => setIsHovering(false)}
       >
-        <svg className="progress-ring" width="200" height="200">
+        <svg className="progress-ring" width="100%" height="100%" viewBox="0 0 200 200">
+          <circle className="progress-ring-circle" stroke="#f3f3f3" strokeWidth="12" fill="transparent" r="80" cx="100" cy="100" />
           <circle
-            className="progress-ring-circle"
-            stroke="#f3f3f3"
-            strokeWidth="12"
-            fill="transparent"
-            r="80"
-            cx="100"
-            cy="100"
-          />
-          <circle
-            className="progress-ring-circle"
+            className="progress-ring-circle progress-ring-fill"
             stroke="url(#gradient)"
             strokeWidth="12"
             strokeLinecap="round"
@@ -64,8 +334,8 @@ function BuyToken() {
             r="80"
             cx="100"
             cy="100"
-            strokeDasharray={`${progress * 5.02} 502}
-            style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }`}
+            strokeDasharray={`${progress * 5.02} 502`}
+            style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
           />
           <defs>
             <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -74,12 +344,11 @@ function BuyToken() {
             </linearGradient>
           </defs>
         </svg>
-        
         <div className="progress-content">
           {isHovering ? (
             <>
-              <div className="progress-value">{overallSold} Sold</div>
-              <div className="progress-text">{(tokenPrice * overallSold).toFixed(2)} BNB</div>
+              <div className="progress-value">{overallSold.toLocaleString()} Sold</div>
+              <div className="progress-text">{(tokenAmount * TOKEN_PRICE_BNB).toFixed(6)} BNB</div>
             </>
           ) : (
             <>
@@ -90,42 +359,58 @@ function BuyToken() {
         </div>
       </div>
 
-      {/* Purchase controls for user */}
       <div className="token-controls">
         <button className="control-btn" onClick={handleDecrement}>-</button>
-        
         <div className="token-amount-display">
           <input
             type="number"
             value={tokenAmount}
-            onChange={(e) => setTokenAmount(Math.min(Number(e.target.value), userPurchaseLimit))}
+            onChange={handleTokenAmountChange}
             min="0"
             max={userPurchaseLimit}
+            step="1"
           />
           <span>Tokens</span>
         </div>
-        
         <button className="control-btn" onClick={handleIncrement}>+</button>
+        <button className="max-btn" onClick={handleMaxPurchase}>Max</button>
       </div>
 
-      {/* Payment details for user's purchase */}
+      <div className="slider-container">
+        <label>Select Token Amount:</label>
+        <input
+          type="range"
+          min="0"
+          max={userPurchaseLimit}
+          step="1"
+          value={tokenAmount}
+          onChange={handleSliderChange}
+          className="token-slider"
+        />
+        <div className="slider-value">{tokenAmount} Tokens</div>
+      </div>
+
       <div className="payment-details">
         <div className="detail-row">
-          <span>Price per Token:</span>
-          <span>{tokenPrice} BNB</span>
+          <span>Token Price (BNB):</span>
+          <span>{TOKEN_PRICE_BNB} BNB</span>
         </div>
         <div className="detail-row">
-          <span>Total Amount:</span>
-          <span>{(tokenPrice * tokenAmount).toFixed(6)} BNB</span>
+          <span>Total Amount (BNB):</span>
+          <span>{(tokenAmount * TOKEN_PRICE_BNB).toFixed(6)} BNB</span>
         </div>
         <div className="detail-row">
           <span>Remaining Purchase Limit:</span>
-          <span>{userPurchaseLimit - tokenAmount}</span>
+          <span>{userPurchaseLimit - tokenAmount} Tokens</span>
         </div>
       </div>
 
-      <button className="purchase-btn" disabled={tokenAmount <= 0}>
-        Buy Token
+      <button
+        className="purchase-btn"
+        disabled={tokenAmount <= 0 || !web3 || !account || isLoading}
+        onClick={handleBuyToken}
+      >
+        {isLoading ? "Processing..." : "Buy Token"}
       </button>
     </div>
   );

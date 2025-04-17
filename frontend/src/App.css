@@ -1,9 +1,13 @@
+/* ===== لود کردن فونت ===== */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap');
+
 /* ===== استایل‌های عمومی برای کل صفحه ===== */
 body {
   margin: 0;
   padding: 0;
-  font-family: "Arial", sans-serif;
-  background-color: #f0f2f5; /* تغییر از background: none به یک رنگ روشن */
+  font-family: 'Poppins', sans-serif; /* اعمال فونت به کل پروژه */
+  font-size: 14px; /* اندازه فونت پایه */
+  background-color: #f0f2f5;
   color: white;
   text-align: center;
   overflow: hidden;
@@ -34,7 +38,7 @@ body {
   width: 180px;
   height: auto;
   margin-bottom: 50px;
-  border-radius: 50%; 
+  border-radius: 50%;
   position: relative;
   top: 90px;
   transition: transform 0.3s ease;
@@ -57,38 +61,92 @@ h1 {
 /* ===== نوار پایین صفحه کاملاً چسبیده به گوشه‌ها ===== */
 .bottom-nav {
   position: fixed;
-  bottom: 0; /* کاملاً به پایین صفحه چسبید */
+  bottom: 0;
   left: 0;
-  width: 100%; /* حالا تمام عرض صفحه را پر می‌کند */
-  height: 80px; /* ارتفاع مناسب */
-  background: #339ef7fa;
+  width: 100%;
+  height: 80px;
+  background: linear-gradient(135deg, #1e3a8a, #3b82f6);
   display: flex;
   justify-content: space-around;
   align-items: center;
-  box-shadow: 0px -5px 15px rgba(0, 0, 0, 0.9);
+  box-shadow: 0px -5px 20px rgba(0, 0, 0, 0.3);
   border-top: none;
-  border-radius: 15px 15px 0 0; /* انحنای نرم در بالا، بدون تأثیر بر کناره‌ها */
+  border-radius: 20px 20px 0 0;
   padding: 10px 0;
   transition: all 0.3s ease-in-out;
 }
 
 /* ===== استایل دکمه‌های نوار پایین ===== */
 .nav-item {
-  color: white;
+  color: #ffffff;
   text-decoration: none;
-  font-size: 18px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 500;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 12px 18px;
-  border-radius: 10px;
+  padding: 10px 15px;
+  border-radius: 12px;
   transition: all 0.3s ease;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(5px);
+  position: relative;
+  overflow: hidden;
 }
 
 .nav-item:hover {
-  color: #ffcc00;
-  transform: translateY(-3px);
+  color: #facc15;
+  transform: translateY(-5px);
+  background: rgba(255, 255, 255, 0.2);
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.nav-item.active {
+  color: #ffffff;
+  background: linear-gradient(135deg, #ffffff, #d97706);
+  transform: scale(1.05);
+  box-shadow: 0 5px 15px rgba(217, 119, 6, 0.4);
+  animation: pulse 1.5s infinite;
+}
+
+.nav-item span {
+  font-size: 24px;
+  margin-bottom: 5px;
+  transition: transform 0.3s ease;
+}
+
+.nav-item:hover span {
+  transform: scale(1.2);
+}
+
+.nav-item.active span {
+  transform: scale(1.2);
+}
+
+.nav-item p {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+  transition: font-size 0.3s ease;
+}
+
+.nav-item:hover p,
+.nav-item.active p {
+  font-size: 13px;
+}
+
+/* ===== انیمیشن پالس برای حالت فعال ===== */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* ===== استایل دکمه Wallet ===== */
@@ -113,4 +171,60 @@ h1 {
 /* ===== استایل برای دیگر صفحات ===== */
 .page-container {
   display: flex;
- flex-direction: column }/* ===== استایل صفحه Path ===== */
+  flex-direction: column;
+}
+
+/* ===== Responsiveness برای موبایل ===== */
+@media (max-width: 768px) {
+  .app-container {
+    min-height: 100vh;
+  }
+
+  .bottom-nav {
+    height: 70px;
+    border-radius: 15px 15px 0 0;
+  }
+
+  .nav-item {
+    padding: 8px 12px;
+  }
+
+  .nav-item span {
+    font-size: 22px;
+    margin-bottom: 4px;
+  }
+
+  .nav-item p {
+    font-size: 11px;
+  }
+
+  .nav-item:hover p,
+  .nav-item.active p {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .bottom-nav {
+    height: 60px; /* اصلاح مقدار height */
+    padding: 5px 0;
+  }
+
+  .nav-item {
+    padding: 6px 10px;
+  }
+
+  .nav-item span {
+    font-size: 20px;
+    margin-bottom: 3px;
+  }
+
+  .nav-item p {
+    font-size: 10px;
+  }
+
+  .nav-item:hover p,
+  .nav-item.active p {
+    font-size: 11px;
+  }
+}
