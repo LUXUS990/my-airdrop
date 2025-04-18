@@ -228,3 +228,7 @@ h1 {
     font-size: 11px;
   }
 }
+.nav-item.disabled {
+  color: grey;
+  pointer-events: none;
+}

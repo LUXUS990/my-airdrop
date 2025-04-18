@@ -17,6 +17,14 @@ const NavItem = ({ to, emoji, label }) => {
   );
 };
 
+// آیتم غیر فعال (نمایشی) برای LuxSwap
+const DisabledNavItem = ({ emoji, label }) => (
+  <div className="nav-item disabled">
+    <span>{emoji}</span>
+    <p>{label}</p>
+  </div>
+);
+
 function App() {
   return (
     <Router>
@@ -31,6 +39,7 @@ function App() {
         <nav className="bottom-nav">
           <NavItem to="/roadmap" emoji="📜" label="Roadmap" />
           <NavItem to="/buy-token" emoji="💎" label="Buy Tokens" />
+          <DisabledNavItem emoji="🌀" label="LuxSwap" />
         </nav>
       </div>
     </Router>

@@ -10,7 +10,8 @@ function Roadmap() {
     { title: "Launch of Pre-Sale Platform for 17M Tokens" },
     { title: "Official Website and Community Hub Deployment" },
     { title: "Initiation of Marketing and Investor Outreach" },
-    { title: "Allocation of 3M Tokens to Liquidity Pool" },
+    { title: "Allocation of 1M Tokens to Liquidity Pool" },
+    { title: "2M Token Airdrop Campaign" },
     { title: "Utilization of Pre-Sale Funds for Development" },
     { title: "Strategic Partnerships with DeFi Ecosystems" },
     { title: "Community Reward Program Rollout" },
@@ -23,6 +24,8 @@ function Roadmap() {
     { title: "Cross-Chain Functionality Deployment" },
     { title: "Launch of Advanced Financial Features" },
     { title: "Long-Term Ecosystem Sustainability" },
+    { title: "Launch LUXSWAP: Create & List Your Meme Coin with LUXUS" },
+    { title: "Trade Any Token Without KYC Using LUXUS" }
   ];
 
   return (
@@ -47,7 +50,11 @@ function Roadmap() {
             </div>
             <div className="info-item">
               <span className="info-label">Liquidity Pool:</span>
-              <span className="info-value">3,000,000 LUX</span>
+              <span className="info-value">1,000,000 LUX</span>
+            </div>
+            <div className="info-item">
+              <span className="info-label">Airdrop Campaign:</span>
+              <span className="info-value">2,000,000 LUX</span>
             </div>
             <div className="info-item">
               <span className="info-label">Team & Future Dev:</span>
