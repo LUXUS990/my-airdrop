@@ -13,7 +13,7 @@ function BuyToken() {
 
   const userPurchaseLimit = 500;
   const totalSupply = 30000000;
-  const overallSold = 1234567;
+  const overallSold = 10000000;
   const TOKEN_PRICE_BNB = 0.002;
 
   const presaleContractAddress = "0xd9f85763f01427d48590e5570b4c6c7c07838c7d";
@@ -298,7 +298,7 @@ function BuyToken() {
               address: '0xc4bfe74dd0d47d82d072feeb237a1d9375fa4b2d',
               symbol: 'LUX',
               decimals: 18,
-              image: 'https://luxus-token.com/logo.png',
+              image: 'https://luxus-society.vercel.app/luxus.png',
             },
           },
         });
