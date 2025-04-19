@@ -83,9 +83,5 @@ function Roadmap() {
     </div>
   );
 }
-<img
-  src={`${process.env.PUBLIC_URL}/luxus.png`}
-  alt="Luxus Logo"
-  className="floating-logo"
-/>
+
 export default Roadmap;

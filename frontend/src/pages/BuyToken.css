@@ -1,3 +1,6 @@
+/* وارد کردن فونت Poppins از Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap');
+
 /* Main page styles */
 .token-purchase-container {
   max-width: 450px;
@@ -49,7 +52,72 @@
 }
 
 .progress-ring-circle {
-  transition: stroke-dasharray 0.6s ease-out;
+  stroke: #f3f3f3;
+  stroke-width: 12;
+  fill: transparent;
+  r: 80;
+  cx: 100;
+  cy: 100;
+  /* ثابت بدون انیمیشن */
+}
+
+.progress-ring-circle.progress-ring-fill {
+  stroke: url(#gradient);
+  stroke-width: 12;
+  stroke-linecap: round;
+  fill: transparent;
+  r: 80;
+  cx: 100;
+  cy: 100;
+  stroke-dasharray: 502 0; /* دایره کامل: 100% پر */
+  stroke-dashoffset: calc(502 - (502 * var(--progress, 0)) / 100); /* حفظ درصد پیشرفت */
+  transform: rotate(-90deg);
+  transform-origin: 50% 50%;
+  animation: wave-rotate 4s linear infinite; /* انیمیشن چرخشی */
+  filter: drop-shadow(0 0 5px rgba(0, 176, 155, 0.5)); /* سایه درخشان */
+}
+
+/* انیمیشن موج چرخشی */
+@keyframes wave-rotate {
+  0% {
+    transform: rotate(-90deg);
+  }
+  100% {
+    transform: rotate(270deg); /* چرخش کامل */
+  }
+}
+
+/* گرادیانت پویا */
+.progress-ring defs linearGradient#gradient stop:nth-child(1) {
+  animation: gradient-shift 6s ease-in-out infinite;
+}
+
+.progress-ring defs linearGradient#gradient stop:nth-child(2) {
+  animation: gradient-shift-alt 6s ease-in-out infinite;
+}
+
+@keyframes gradient-shift {
+  0% {
+    stop-color: #00b09b;
+  }
+  50% {
+    stop-color: #ff6f61;
+  }
+  100% {
+    stop-color: #00b09b;
+  }
+}
+
+@keyframes gradient-shift-alt {
+  0% {
+    stop-color: #96c93d;
+  }
+  50% {
+    stop-color: #019080;
+  }
+  100% {
+    stop-color: #96c93d;
+  }
 }
 
 .progress-content {
@@ -58,20 +126,32 @@
   left: 50%;
   transform: translate(-50%, -50%);
   text-align: center;
-  width: 100%;
+  width: 80%; /* برای جا شدن متن طولانی */
+  pointer-events: none; /* جلوگیری از تداخل با هاور */
 }
 
-.progress-value {
-  font-size: 2.2rem;
-  font-weight: 700;
-  color: #2c3e50;
-  margin-bottom: 0.5rem;
-  animation: pulse 2s infinite;
+.luxus-text {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700; /* Bold */
+  font-size: 1.1rem; /* سایز مناسب برای دایره 200px */
+  line-height: 1.4; /* فاصله خطوط برای خوانایی */
+  color: #2c3e50; /* مشکی تیره */
+  animation: glow 3s ease-in-out infinite; /* انیمیشن درخشش ملایم */
+  padding: 0.5rem;
+  text-transform: uppercase; /* برای حس لوکس */
 }
 
-.progress-text {
-  font-size: 1rem;
-  color: #7f8c8d;
+/* انیمیشن درخشش ملایم */
+@keyframes glow {
+  0% {
+    text-shadow: 0 0 5px rgba(0, 176, 155, 0.5);
+  }
+  50% {
+    text-shadow: 0 0 10px rgba(0, 176, 155, 0.8), 0 0 15px rgba(150, 201, 61, 0.5);
+  }
+  100% {
+    text-shadow: 0 0 5px rgba(0, 176, 155, 0.5);
+  }
 }
 
 /* Purchase controls */
@@ -274,19 +354,6 @@
   box-shadow: none;
 }
 
-/* Animations */
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.05);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
 /* Responsiveness */
 @media (max-width: 768px) {
   .token-purchase-container {
@@ -313,12 +380,21 @@
     margin-bottom: 1.5rem;
   }
 
-  .progress-value {
-    font-size: 1.8rem;
+  .progress-ring-circle {
+    stroke-width: 10;
+    r: 60;
+    cx: 75;
+    cy: 75;
   }
 
-  .progress-text {
-    font-size: 0.85rem;
+  .progress-ring-circle.progress-ring-fill {
+    stroke-dasharray: 377 0; /* 100% پر */
+    stroke-dashoffset: calc(377 - (377 * var(--progress, 0)) / 100);
+  }
+
+  .luxus-text {
+    font-size: 0.9rem;
+    line-height: 1.3;
   }
 
   .token-controls {
@@ -395,12 +471,21 @@
     margin-bottom: 1.2rem;
   }
 
-  .progress-value {
-    font-size: 1.5rem;
+  .progress-ring-circle {
+    stroke-width: 8;
+    r: 48;
+    cx: 60;
+    cy: 60;
   }
 
-  .progress-text {
-    font-size: 0.75rem;
+  .progress-ring-circle.progress-ring-fill {
+    stroke-dasharray: 301 0; /* 100% پر */
+    stroke-dashoffset: calc(301 - (301 * var(--progress, 0)) / 100);
+  }
+
+  .luxus-text {
+    font-size: 0.7rem;
+    line-height: 1.2;
   }
 
   .token-controls {

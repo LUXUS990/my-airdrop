@@ -2,225 +2,226 @@ import React, { useState, useEffect } from 'react';
 import Web3 from 'web3';
 import './BuyToken.css';
 /* global BigInt */
+
 function BuyToken() {
   const [web3, setWeb3] = useState(null);
   const [account, setAccount] = useState(null);
   const [tokenAmount, setTokenAmount] = useState(0);
-  const [progress, setProgress] = useState(0);
-  const [isHovering, setIsHovering] = useState(false);
+  const [progress, setProgress] = useState(43.33);
+  const [totalSold, setTotalSold] = useState(0);
   const [metaMaskError, setMetaMaskError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const userPurchaseLimit = 500;
-  const totalSupply = 30000000;
-  const overallSold = 10000000;
+  const TOTAL_SUPPLY = 30000000;
+  const TEAM_TOKENS = 13000000;
   const TOKEN_PRICE_BNB = 0.002;
 
   const presaleContractAddress = "0xd9f85763f01427d48590e5570b4c6c7c07838c7d";
   const presaleABI = [
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_token",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "owner",
-          "type": "address"
-        }
-      ],
-      "name": "OwnableInvalidOwner",
-      "type": "error"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "account",
-          "type": "address"
-        }
-      ],
-      "name": "OwnableUnauthorizedAccount",
-      "type": "error"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "previousOwner",
-          "type": "address"
-        },
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "OwnershipTransferred",
-      "type": "event"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "buyer",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "amount",
-          "type": "uint256"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "bnbSpent",
-          "type": "uint256"
-        }
-      ],
-      "name": "TokensPurchased",
-      "type": "event"
-    },
-    {
-      "inputs": [],
-      "name": "MAX_TOKENS_PER_BUY",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "TOKEN_PRICE_BNB",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "TOTAL_SALE_SUPPLY",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_tokenAmount",
-          "type": "uint256"
-        }
-      ],
-      "name": "buyTokens",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "luxusToken",
-      "outputs": [
-        {
-          "internalType": "contract IERC20",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "owner",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "renounceOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "totalSold",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "withdrawFunds",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "withdrawUnsoldTokens",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    }
-  ];
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_token",
+				"type": "address"
+			}
+		],
+		"stateMutability": "nonpayable",
+		"type": "constructor"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "owner",
+				"type": "address"
+			}
+		],
+		"name": "OwnableInvalidOwner",
+		"type": "error"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "account",
+				"type": "address"
+			}
+		],
+		"name": "OwnableUnauthorizedAccount",
+		"type": "error"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "previousOwner",
+				"type": "address"
+			},
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "OwnershipTransferred",
+		"type": "event"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "address",
+				"name": "buyer",
+				"type": "address"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "bnbSpent",
+				"type": "uint256"
+			}
+		],
+		"name": "TokensPurchased",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "MAX_TOKENS_PER_BUY",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "TOKEN_PRICE_BNB",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "TOTAL_SALE_SUPPLY",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_tokenAmount",
+				"type": "uint256"
+			}
+		],
+		"name": "buyTokens",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "luxusToken",
+		"outputs": [
+			{
+				"internalType": "contract IERC20",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "owner",
+		"outputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "renounceOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "totalSold",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "newOwner",
+				"type": "address"
+			}
+		],
+		"name": "transferOwnership",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "withdrawFunds",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "withdrawUnsoldTokens",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	}
+];
 
   useEffect(() => {
     const connectToMetaMask = async () => {
@@ -242,9 +243,30 @@ function BuyToken() {
   }, []);
 
   useEffect(() => {
-    const calculatedProgress = (overallSold / totalSupply) * 100;
-    setProgress(Math.min(calculatedProgress, 100));
-  }, []);
+    const fetchTotalSold = async () => {
+      if (web3) {
+        try {
+          const presaleContract = new web3.eth.Contract(presaleABI, presaleContractAddress);
+          const sold = await presaleContract.methods.totalSold().call();
+          console.log("Raw Total Sold:", sold);
+          const soldTokens = Number(web3.utils.fromWei(sold, 'ether'));
+          console.log("Total Sold (Tokens):", soldTokens);
+          setTotalSold(soldTokens);
+          const totalAllocated = TEAM_TOKENS + soldTokens;
+          console.log("Total Allocated (Team + Sold):", totalAllocated);
+          const calculatedProgress = (totalAllocated / TOTAL_SUPPLY) * 100;
+          console.log("Calculated Progress:", calculatedProgress);
+          setProgress(Math.min(calculatedProgress, 100));
+        } catch (error) {
+          console.error("Error fetching total sold:", error);
+          setProgress(43.33);
+        }
+      }
+    };
+    fetchTotalSold();
+    const interval = setInterval(fetchTotalSold, 5000);
+    return () => clearInterval(interval);
+  }, [web3]);
 
   const handleIncrement = () => {
     setTokenAmount(prev => Math.min(prev + 1, userPurchaseLimit));
@@ -289,6 +311,17 @@ function BuyToken() {
 
       alert("Tokens purchased successfully!");
 
+      const sold = await presaleContract.methods.totalSold().call();
+      console.log("Raw Total Sold After Purchase:", sold);
+      const soldTokens = Number(web3.utils.fromWei(sold, 'ether'));
+      console.log("Total Sold After Purchase (Tokens):", soldTokens);
+      setTotalSold(soldTokens);
+      const totalAllocated = TEAM_TOKENS + soldTokens;
+      console.log("Total Allocated After Purchase (Team + Sold):", totalAllocated);
+      const calculatedProgress = (totalAllocated / TOTAL_SUPPLY) * 100;
+      console.log("Calculated Progress After Purchase:", calculatedProgress);
+      setProgress(Math.min(calculatedProgress, 100));
+
       if (window.ethereum) {
         await window.ethereum.request({
           method: 'wallet_watchAsset',
@@ -304,6 +337,7 @@ function BuyToken() {
         });
       }
     } catch (error) {
+      console.error("Error buying tokens:", error);
       alert("Error buying tokens: " + (error.message || "Unknown error"));
     } finally {
       setIsLoading(false);
@@ -316,15 +350,8 @@ function BuyToken() {
 
       {metaMaskError && <div className="error-message">{metaMaskError}</div>}
 
-      <div
-        className="progress-ring-container"
-        onMouseEnter={() => setIsHovering(true)}
-        onMouseLeave={() => setIsHovering(false)}
-        onTouchStart={() => setIsHovering(true)}
-        onTouchEnd={() => setIsHovering(false)}
-      >
+      <div className="progress-ring-container">
         <svg className="progress-ring" width="100%" height="100%" viewBox="0 0 200 200">
-          <circle className="progress-ring-circle" stroke="#f3f3f3" strokeWidth="12" fill="transparent" r="80" cx="100" cy="100" />
           <circle
             className="progress-ring-circle progress-ring-fill"
             stroke="url(#gradient)"
@@ -334,8 +361,6 @@ function BuyToken() {
             r="80"
             cx="100"
             cy="100"
-            strokeDasharray={`${progress * 5.02} 502`}
-            style={{ transform: 'rotate(-90deg)', transformOrigin: '50% 50%' }}
           />
           <defs>
             <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
@@ -345,17 +370,9 @@ function BuyToken() {
           </defs>
         </svg>
         <div className="progress-content">
-          {isHovering ? (
-            <>
-              <div className="progress-value">{overallSold.toLocaleString()} Sold</div>
-              <div className="progress-text">{(tokenAmount * TOKEN_PRICE_BNB).toFixed(6)} BNB</div>
-            </>
-          ) : (
-            <>
-              <div className="progress-value">{Math.round(progress)}%</div>
-              <div className="progress-text">Total Sale Progress</div>
-            </>
-          )}
+          <div className="luxus-text">
+            LUXUS: As rare as you.<br />Grab yours now!
+          </div>
         </div>
       </div>
 
