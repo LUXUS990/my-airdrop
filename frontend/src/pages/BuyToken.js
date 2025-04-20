@@ -331,7 +331,7 @@ function BuyToken() {
               address: '0xc4bfe74dd0d47d82d072feeb237a1d9375fa4b2d',
               symbol: 'LUX',
               decimals: 18,
-              image: 'https://luxus-society.vercel.app/luxus.png',
+              image: 'https://luxus-society.vercel.app/logo.png',
             },
           },
         });
