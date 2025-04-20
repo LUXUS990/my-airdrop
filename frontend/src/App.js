@@ -30,12 +30,13 @@ function App() {
     <Router>
       <div className="app-container">
         <Routes>
-          <Route path="/" element={<Navigate to="/roadmap" />} />
+          {/* مسیر اصلی به BuyToken هدایت می‌شه */}
+          <Route path="/" element={<Navigate to="/buy-token" />} />
           <Route path="/roadmap" element={<Roadmap />} />
           <Route path="/buy-token" element={<BuyToken />} />
         </Routes>
 
-        {/* Bottom Navigation */}
+        {/* Bottom Navigation بدون تغییر */}
         <nav className="bottom-nav">
           <NavItem to="/roadmap" emoji="📜" label="Roadmap" />
           <NavItem to="/buy-token" emoji="💎" label="Buy Tokens" />

@@ -7,18 +7,15 @@ function BuyToken() {
   const [web3, setWeb3] = useState(null);
   const [account, setAccount] = useState(null);
   const [tokenAmount, setTokenAmount] = useState(0);
-  const [progress, setProgress] = useState(43.33);
-  const [totalSold, setTotalSold] = useState(0);
   const [metaMaskError, setMetaMaskError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const userPurchaseLimit = 500;
-  const TOTAL_SUPPLY = 30000000;
-  const TEAM_TOKENS = 13000000;
   const TOKEN_PRICE_BNB = 0.002;
 
   const presaleContractAddress = "0xd9f85763f01427d48590e5570b4c6c7c07838c7d";
   const presaleABI = [
+    // ABI همان کد قبلی که فرستادی
     {
       "inputs": [
         {
@@ -242,32 +239,6 @@ function BuyToken() {
     connectToMetaMask();
   }, []);
 
-  useEffect(() => {
-    const fetchTotalSold = async () => {
-      if (web3) {
-        try {
-          const presaleContract = new web3.eth.Contract(presaleABI, presaleContractAddress);
-          const sold = await presaleContract.methods.totalSold().call();
-          console.log("Raw Total Sold:", sold);
-          const soldTokens = Number(web3.utils.fromWei(sold, 'ether'));
-          console.log("Total Sold (Tokens):", soldTokens);
-          setTotalSold(soldTokens);
-          const totalAllocated = TEAM_TOKENS + soldTokens;
-          console.log("Total Allocated (Team + Sold):", totalAllocated);
-          const calculatedProgress = (totalAllocated / TOTAL_SUPPLY) * 100;
-          console.log("Calculated Progress:", calculatedProgress);
-          setProgress(Math.min(calculatedProgress, 100));
-        } catch (error) {
-          console.error("Error fetching total sold:", error);
-          setProgress(43.33);
-        }
-      }
-    };
-    fetchTotalSold();
-    const interval = setInterval(fetchTotalSold, 5000);
-    return () => clearInterval(interval);
-  }, [web3]);
-
   const handleIncrement = () => {
     setTokenAmount(prev => Math.min(prev + 1, userPurchaseLimit));
   };
@@ -310,17 +281,6 @@ function BuyToken() {
       });
 
       alert("Tokens purchased successfully!");
-
-      const sold = await presaleContract.methods.totalSold().call();
-      console.log("Raw Total Sold After Purchase:", sold);
-      const soldTokens = Number(web3.utils.fromWei(sold, 'ether'));
-      console.log("Total Sold After Purchase (Tokens):", soldTokens);
-      setTotalSold(soldTokens);
-      const totalAllocated = TEAM_TOKENS + soldTokens;
-      console.log("Total Allocated After Purchase (Team + Sold):", totalAllocated);
-      const calculatedProgress = (totalAllocated / TOTAL_SUPPLY) * 100;
-      console.log("Calculated Progress After Purchase:", calculatedProgress);
-      setProgress(Math.min(calculatedProgress, 100));
 
       if (window.ethereum) {
         await window.ethereum.request({
@@ -435,6 +395,32 @@ function BuyToken() {
         onClick={handleBuyToken}
       >
         {isLoading ? "Processing..." : "Buy Token"}
+      </button>
+
+      <button
+        className="add-token-btn"
+        onClick={async () => {
+          try {
+            await window.ethereum.request({
+              method: 'wallet_watchAsset',
+              params: {
+                type: 'ERC20',
+                options: {
+                  address: '0xc4bfe74dd0d47d82d072feeb237a1d9375fa4b2d',
+                  symbol: 'LUX',
+                  decimals: 18,
+                  image: 'https://luxus-society.vercel.app/logo.png',
+                },
+              },
+            });
+            alert('Token added to MetaMask!');
+          } catch (error) {
+            console.error('Error adding token:', error);
+            alert('Failed to add token to MetaMask.');
+          }
+        }}
+      >
+        Add LUX to MetaMask
       </button>
     </div>
   );
