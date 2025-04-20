@@ -291,6 +291,16 @@
   margin-top: 0.5rem;
   font-size: 0.9rem;
   color: #2c3e50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem; /* فاصله بین عدد، لوگو، و متن */
+}
+
+.slider-value-logo {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle; /* تراز عمودی با متن */
 }
 
 /* Payment details section */
@@ -430,6 +440,11 @@
     font-size: 0.85rem;
   }
 
+  .slider-value-logo {
+    width: 18px;
+    height: 18px;
+  }
+
   .payment-details {
     padding: 1rem;
     margin-bottom: 1.5rem;
@@ -525,6 +540,11 @@
 
   .slider-value {
     font-size: 0.8rem;
+  }
+
+  .slider-value-logo {
+    width: 16px;
+    height: 16px;
   }
 
   .payment-details {
