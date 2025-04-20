@@ -406,7 +406,7 @@ function BuyToken() {
         />
         <div className="slider-value">
           <img
-            src="/luxus.png"
+            src="/logo.png"
             alt="Luxus Logo"
             className="slider-value-logo"
           />
