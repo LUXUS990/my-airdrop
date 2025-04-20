@@ -227,8 +227,23 @@ function BuyToken() {
           const web3Instance = new Web3(window.ethereum);
           setWeb3(web3Instance);
           const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-          setAccount(accounts[0]);
-          setMetaMaskError(null);
+  
+          if (accounts.length > 0) {
+            setAccount(accounts[0]);
+            setMetaMaskError(null);
+          } else {
+            setMetaMaskError("No accounts found in MetaMask.");
+          }
+  
+          // گوش دادن به تغییرات اکانت
+          window.ethereum.on('accountsChanged', (accounts) => {
+            if (accounts.length > 0) {
+              setAccount(accounts[0]);  // اکانت جدید رو به state اضافه کن
+            } else {
+              setAccount(null);  // اگر هیچ اکانتی نبود، null بذار
+            }
+          });
+  
         } catch (err) {
           setMetaMaskError("Failed to connect to MetaMask. Please try again.");
         }
@@ -236,7 +251,15 @@ function BuyToken() {
         setMetaMaskError("MetaMask is not installed. Please install MetaMask to proceed.");
       }
     };
+  
     connectToMetaMask();
+  
+    // پاکسازی listener
+    return () => {
+      if (window.ethereum && window.ethereum.removeListener) {
+        window.ethereum.removeListener('accountsChanged', () => {});
+      }
+    };
   }, []);
 
   const handleIncrement = () => {
