@@ -13,9 +13,21 @@ function BuyToken() {
   const userPurchaseLimit = 500;
   const TOKEN_PRICE_BNB = 0.002;
 
-  const presaleContractAddress = "0xd9f85763f01427d48590e5570b4c6c7c07838c7d";
+  const presaleContractAddress = "0xc943b54b1222cc27e6e7f8ecd1a1ca11474445cd";
   const presaleABI = [
-    // ABI همان کد قبلی که فرستادی
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_tokenAmount",
+          "type": "uint256"
+        }
+      ],
+      "name": "buyTokens",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
     {
       "inputs": [
         {
@@ -69,6 +81,13 @@ function BuyToken() {
       "type": "event"
     },
     {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
       "anonymous": false,
       "inputs": [
         {
@@ -94,6 +113,46 @@ function BuyToken() {
       "type": "event"
     },
     {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "transferOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdrawFunds",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdrawUnsoldTokens",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "luxusToken",
+      "outputs": [
+        {
+          "internalType": "contract IERC20",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [],
       "name": "MAX_TOKENS_PER_BUY",
       "outputs": [
@@ -101,6 +160,19 @@ function BuyToken() {
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "owner",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -133,52 +205,6 @@ function BuyToken() {
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_tokenAmount",
-          "type": "uint256"
-        }
-      ],
-      "name": "buyTokens",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "luxusToken",
-      "outputs": [
-        {
-          "internalType": "contract IERC20",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "owner",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "renounceOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
       "inputs": [],
       "name": "totalSold",
       "outputs": [
@@ -190,35 +216,8 @@ function BuyToken() {
       ],
       "stateMutability": "view",
       "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "newOwner",
-          "type": "address"
-        }
-      ],
-      "name": "transferOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "withdrawFunds",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "withdrawUnsoldTokens",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
     }
-  ];
+  ]
 
   useEffect(() => {
     const connectToMetaMask = async () => {
@@ -311,7 +310,7 @@ function BuyToken() {
           params: {
             type: 'ERC20',
             options: {
-              address: '0xc4bfe74dd0d47d82d072feeb237a1d9375fa4b2d',
+              address: '0xea6c02a18433063ae4ae5ac2da0aca2b346f8bbf',
               symbol: 'LUX',
               decimals: 18,
               image: 'https://luxus-society.vercel.app/logo.png',
