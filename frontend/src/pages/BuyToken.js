@@ -11,9 +11,9 @@ function BuyToken() {
   const [isLoading, setIsLoading] = useState(false);
 
   const userPurchaseLimit = 500;
-  const TOKEN_PRICE_BNB = 0.002;
+  const TOKEN_PRICE_BNB = 0.001;
 
-  const presaleContractAddress = "0xc943b54b1222cc27e6e7f8ecd1a1ca11474445cd";
+  const presaleContractAddress = "0x6ff30df08becb36781af096d1678c185696c69f4";
   const presaleABI = [
     {
       "inputs": [
@@ -310,7 +310,7 @@ function BuyToken() {
           params: {
             type: 'ERC20',
             options: {
-              address: '0xea6c02a18433063ae4ae5ac2da0aca2b346f8bbf',
+              address: '0x1b3aa225f52785b8863ae9dacb82ad0bfed645cd',
               symbol: 'LUX',
               decimals: 18,
               image: 'https://luxus-society.vercel.app/logo.png',
