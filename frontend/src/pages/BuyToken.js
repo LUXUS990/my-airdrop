@@ -11,9 +11,9 @@ function BuyToken() {
   const [isLoading, setIsLoading] = useState(false);
 
   const userPurchaseLimit = 500;
-  const TOKEN_PRICE_BNB = 0.001;
+  const TOKEN_PRICE_BNB = 0.00052;
 
-  const presaleContractAddress = "0x6ff30df08becb36781af096d1678c185696c69f4";
+  const presaleContractAddress = "0xfaab926889148afe74d4ec6c31f9d74354c81940";
   const presaleABI = [
     {
       "inputs": [
