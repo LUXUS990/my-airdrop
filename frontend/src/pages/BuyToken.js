@@ -10,16 +10,23 @@ function BuyToken() {
   const [metaMaskError, setMetaMaskError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const userPurchaseLimit = 500;
+  const userPurchaseLimit = 2000;
   const TOKEN_PRICE_BNB = 0.00052;
 
-  const presaleContractAddress = "0xfaab926889148afe74d4ec6c31f9d74354c81940";
+  const presaleContractAddress = "0x42a312228fe44999f625a495f3930cad28b5820c";
   const presaleABI = [
+    {
+      "inputs": [],
+      "name": "acceptOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
     {
       "inputs": [
         {
           "internalType": "uint256",
-          "name": "_tokenAmount",
+          "name": "tokenAmount",
           "type": "uint256"
         }
       ],
@@ -34,10 +41,36 @@ function BuyToken() {
           "internalType": "address",
           "name": "_token",
           "type": "address"
+        },
+        {
+          "internalType": "address",
+          "name": "_multisigOwner",
+          "type": "address"
         }
       ],
-      "stateMutability": "nonpayable",
+      "stateMutability": "payable",
       "type": "constructor"
+    },
+    {
+      "inputs": [],
+      "name": "FailedCall",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "balance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "needed",
+          "type": "uint256"
+        }
+      ],
+      "name": "InsufficientBalance",
+      "type": "error"
     },
     {
       "inputs": [
@@ -62,6 +95,67 @@ function BuyToken() {
       "type": "error"
     },
     {
+      "inputs": [],
+      "name": "ReentrancyGuardReentrantCall",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "renounceOwnership",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "SafeERC20FailedOperation",
+      "type": "error"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "FundsWithdrawn",
+      "type": "event"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "previousOwner",
+          "type": "address"
+        },
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "newOwner",
+          "type": "address"
+        }
+      ],
+      "name": "OwnershipTransferStarted",
+      "type": "event"
+    },
+    {
       "anonymous": false,
       "inputs": [
         {
@@ -79,13 +173,6 @@ function BuyToken() {
       ],
       "name": "OwnershipTransferred",
       "type": "event"
-    },
-    {
-      "inputs": [],
-      "name": "renounceOwnership",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
     },
     {
       "anonymous": false,
@@ -126,17 +213,36 @@ function BuyToken() {
       "type": "function"
     },
     {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "owner",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "amount",
+          "type": "uint256"
+        }
+      ],
+      "name": "UnsoldTokensWithdrawn",
+      "type": "event"
+    },
+    {
       "inputs": [],
       "name": "withdrawFunds",
       "outputs": [],
-      "stateMutability": "nonpayable",
+      "stateMutability": "payable",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "withdrawUnsoldTokens",
       "outputs": [],
-      "stateMutability": "nonpayable",
+      "stateMutability": "payable",
       "type": "function"
     },
     {
@@ -147,19 +253,6 @@ function BuyToken() {
           "internalType": "contract IERC20",
           "name": "",
           "type": "address"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "MAX_TOKENS_PER_BUY",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
         }
       ],
       "stateMutability": "view",
@@ -180,25 +273,12 @@ function BuyToken() {
     },
     {
       "inputs": [],
-      "name": "TOKEN_PRICE_BNB",
+      "name": "pendingOwner",
       "outputs": [
         {
-          "internalType": "uint256",
+          "internalType": "address",
           "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "TOTAL_SALE_SUPPLY",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
+          "type": "address"
         }
       ],
       "stateMutability": "view",
@@ -212,6 +292,19 @@ function BuyToken() {
           "internalType": "uint256",
           "name": "",
           "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdrawalAllowedAfterTimestamp",
+      "outputs": [
+        {
+          "internalType": "uint48",
+          "name": "",
+          "type": "uint48"
         }
       ],
       "stateMutability": "view",
@@ -310,7 +403,7 @@ function BuyToken() {
           params: {
             type: 'ERC20',
             options: {
-              address: '0x1b3aa225f52785b8863ae9dacb82ad0bfed645cd',
+              address: '0xcd00d192d95c4e8e45286afbbc5d5bb40711a40b',
               symbol: 'LUX',
               decimals: 18,
               image: 'https://luxus-society.vercel.app/logo.png',
